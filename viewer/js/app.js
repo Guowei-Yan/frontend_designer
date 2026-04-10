@@ -1,4 +1,6 @@
 import { ManifestManager } from './manifest.js';
+import { Scaler } from './scaler.js';
+import { ResizeEngine } from './resizeEngine.js';
 
 // DOM Elements
 const DOM = {
@@ -9,17 +11,26 @@ const DOM = {
     btnPrev: document.getElementById('btn-prev'),
     btnNext: document.getElementById('btn-next'),
     alert: document.getElementById('dev-alert'),
-    themeBtn: document.getElementById('btn-theme')
+    themeBtn: document.getElementById('btn-theme'),
+    mockWrapper: document.getElementById('mock-screen-wrapper'),
+    mockScreen: document.getElementById('mock-screen'),
+    ratioSelect: document.getElementById('select-ratio'),
+    badge: document.getElementById('badge-dimensions')
 };
 
 class App {
     constructor() {
         this.manifest = new ManifestManager();
+        this.scaler = new Scaler(DOM.mockWrapper, DOM.mockScreen);
+        this.resizeEngine = new ResizeEngine(DOM.mockScreen, this.scaler, DOM.badge, DOM.ratioSelect);
         this.init();
     }
 
     async init() {
         this.setupEventListeners();
+        // Initial scale
+        setTimeout(() => this.scaler.rescale(), 50);
+
         
         const hasManifest = await this.manifest.loadManifest();
         if (!hasManifest) {

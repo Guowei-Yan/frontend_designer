@@ -1,0 +1,131 @@
+/* Viewport & Resizing Styles */
+
+#mock-screen-wrapper {
+    /* Set up a flexible center container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#mock-screen {
+    /* Will be transformed by JS */
+    transform-origin: center center;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Some default size before JS takes over */
+    width: 375px; 
+    height: 812px;
+}
+
+#mock-screen.is-resizing {
+    /* Disable transitions during drag for instant feedback */
+    transition: none !important;
+}
+
+/* Base styles for the iframe to ensure it behaves like a device screen */
+#mock-screen iframe {
+    background: #ffffff; /* Base default, overridden by its own CSS or theme port */
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: inherit;
+}
+
+/* ==================================
+   Overlay Shield (blocks pointer events to iframe)
+   ================================== */
+#overlay-shield {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: grab;
+}
+
+#overlay-shield.active {
+    cursor: grabbing;
+}
+
+/* ==================================
+   Resize Handles
+   ================================== */
+.resize-handle {
+    position: absolute;
+    z-index: 20;
+    transition: background-color 0.2s ease;
+}
+
+/* Show handles subtly, highlight on hover/active */
+.resize-handle::before {
+    content: '';
+    position: absolute;
+    background-color: var(--color-border);
+    transition: background-color 0.2s ease;
+}
+
+.resize-handle:hover::before,
+#mock-screen.is-resizing .resize-handle::before {
+    background-color: var(--color-accent);
+}
+
+/* Right Handle */
+.handle-r {
+    top: 0;
+    right: -10px;
+    bottom: 0;
+    width: 20px;
+    cursor: col-resize;
+}
+.handle-r::before {
+    top: 50%;
+    right: 8px; /* Visual line */
+    transform: translateY(-50%);
+    width: 4px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+/* Bottom Handle */
+.handle-b {
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    height: 20px;
+    cursor: row-resize;
+}
+.handle-b::before {
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 4px;
+    border-radius: 4px;
+}
+
+/* Bottom-Right Corner Handle */
+.handle-br {
+    right: -10px;
+    bottom: -10px;
+    width: 24px;
+    height: 24px;
+    cursor: nwse-resize;
+    /* Optional: custom icon or corner styling */
+}
+.handle-br::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-bottom: 3px solid var(--color-border);
+    border-right: 3px solid var(--color-border);
+    border-bottom-right-radius: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.handle-br:hover::after,
+#mock-screen.is-resizing .handle-br::after {
+    border-color: var(--color-accent);
+}
