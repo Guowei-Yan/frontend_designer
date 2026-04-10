@@ -1,0 +1,19 @@
+{
+  "name": "frontend_designer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.7.1",
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "open": "^11.0.0",
+    "ws": "^8.20.0"
+  }
+}
