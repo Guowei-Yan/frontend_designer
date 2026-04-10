@@ -2,6 +2,7 @@ import { ManifestManager } from './manifest.js';
 import { Scaler } from './scaler.js';
 import { ResizeEngine } from './resizeEngine.js';
 import { Gallery } from './gallery.js';
+import { SocketClient } from './socketClient.js';
 
 // DOM Elements
 const DOM = {
@@ -26,6 +27,14 @@ class App {
         this.scaler = new Scaler(DOM.mockWrapper, DOM.mockScreen);
         this.resizeEngine = new ResizeEngine(DOM.mockScreen, this.scaler, DOM.badge, DOM.ratioSelect);
         this.gallery = new Gallery(this.manifest, (index) => this.loadDesign(index));
+        
+        // Setup Live Reload handling
+        this.socketClient = new SocketClient(
+            this.manifest,
+            () => this.onManifestChange(),
+            (filePath) => this.onFileChange(filePath)
+        );
+        
         this.init();
     }
 
@@ -92,6 +101,45 @@ class App {
         const entry = this.manifest.getCurrentEntry();
         if (entry) {
             this.loadDesign(entry.index);
+        }
+    }
+
+    onManifestChange() {
+        // Redraw gallery if open
+        if (this.gallery.isOpen) this.gallery.render();
+        
+        // Update nav buttons
+        this.updateNavButtons();
+        
+        // Hide wizard if we now have items
+        if (this.manifest.getEntries().length > 0) {
+            DOM.wizard.classList.add('hidden');
+            if (this.manifest.currentIndex === -1) {
+                this.loadDesign(this.manifest.getEntries()[0].index);
+            }
+        } else {
+            this.showWizard();
+        }
+    }
+
+    onFileChange(filePath) {
+        // Check if the current frame is displaying this file
+        const current = this.manifest.getCurrentEntry();
+        
+        // filePath from server is absolute relative to design dir e.g., '/login.html'
+        // current.filePath might be 'login.html'. Let's normalize both to start with '/'
+        if (current) {
+            const normalizedCurrent = '/' + current.filePath.replace(/^\//, '');
+            const normalizedChanged = '/' + filePath.replace(/^\//, '');
+            
+            if (normalizedCurrent === normalizedChanged) {
+                this.refreshFrame();
+            }
+        }
+        
+        // Always refresh gallery since it has thumbnails
+        if (this.gallery.isOpen) {
+            this.gallery.render();
         }
     }
 
