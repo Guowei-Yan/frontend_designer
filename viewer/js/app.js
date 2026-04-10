@@ -3,6 +3,8 @@ import { Scaler } from './scaler.js';
 import { ResizeEngine } from './resizeEngine.js';
 import { Gallery } from './gallery.js';
 import { SocketClient } from './socketClient.js';
+import { ThemeManager } from './themeManager.js';
+import { StateManager } from './stateManager.js';
 
 // DOM Elements
 const DOM = {
@@ -27,6 +29,10 @@ class App {
         this.scaler = new Scaler(DOM.mockWrapper, DOM.mockScreen);
         this.resizeEngine = new ResizeEngine(DOM.mockScreen, this.scaler, DOM.badge, DOM.ratioSelect);
         this.gallery = new Gallery(this.manifest, (index) => this.loadDesign(index));
+        
+        // Theme & State
+        this.themeManager = new ThemeManager(DOM.themeBtn, DOM.iframe);
+        this.stateManager = new StateManager(this, DOM.iframe, DOM.alert);
         
         // Setup Live Reload handling
         this.socketClient = new SocketClient(
@@ -81,8 +87,10 @@ class App {
             
             this.updateNavButtons();
             
-            // Push history state if we add routing later
-            // window.history.replaceState({ index }, '', `?p=${index}`);
+            // Update URL
+            if (this.stateManager) {
+                this.stateManager.updateUrlParams(index);
+            }
         }
     }
 
@@ -161,12 +169,7 @@ class App {
         // Refresh
         DOM.btnRefresh.addEventListener('click', () => this.refreshFrame());
 
-        // Basic Theme Toggle (Shell level)
-        DOM.themeBtn.addEventListener('click', () => {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-viewer-theme');
-            html.setAttribute('data-viewer-theme', current === 'dark' ? 'light' : 'dark');
-        });
+        // Theme logic is now delegated to ThemeManager
         
         // Keyboard Shortcuts
         document.addEventListener('keydown', (e) => {
@@ -195,7 +198,7 @@ class App {
                     this.refreshFrame();
                     break;
                 case 'd':
-                    DOM.themeBtn.click();
+                    DOM.themeBtn.click(); // Redirects to ThemeManager
                     break;
                 case 'escape':
                     if (this.gallery.isOpen) {
