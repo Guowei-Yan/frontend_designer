@@ -1,118 +1,115 @@
 <!DOCTYPE html>
 <html lang="en" data-viewer-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design-View Simulator</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Main Styles -->
-    <link rel="stylesheet" href="/viewer/styles/main.css">
-    <link rel="stylesheet" href="/viewer/styles/viewport.css">
-    <link rel="stylesheet" href="/viewer/styles/gallery.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design-View Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/viewer/styles/main.css">
+  <link rel="stylesheet" href="/viewer/styles/viewport.css">
+  <link rel="stylesheet" href="/viewer/styles/gallery.css">
 </head>
 <body>
-    <div id="app">
-        <!-- Command Bar (Sidebar on Desktop, Bottom on Mobile) -->
-        <aside id="command-bar">
-            <div class="cmd-brand">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <span class="cmd-brand-text">Design-View</span>
-            </div>
+  <div id="app">
+    <aside id="command-bar">
+      <div class="cmd-brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span class="cmd-brand-text">Design-View</span>
+      </div>
 
-            <div class="cmd-controls">
-                <div class="cmd-nav group-section">
-                    <button id="btn-prev" class="icon-btn" title="Previous Design" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                    </button>
-                    <div class="nav-indicator">
-                        <span id="nav-count">0 / 0</span>
-                        <span id="nav-title">Loading...</span>
-                    </div>
-                    <button id="btn-next" class="icon-btn" title="Next Design" disabled>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
-
-                <div class="cmd-actions group-section">
-                    <button id="btn-gallery" class="action-btn" title="Open Gallery (G)">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                        <span>Gallery</span>
-                    </button>
-                    <button id="btn-refresh" class="action-btn" title="Force Refresh (R)">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 1 0 2.63-6.37L2 12"/></svg>
-                        <span>Reload</span>
-                    </button>
-                </div>
-
-                <div class="cmd-tools group-section">
-                    <div class="tool-row">
-                        <label>Aspect Ratio</label>
-                        <select id="select-ratio">
-                            <option value="free">Free Resize</option>
-                            <option value="1920x1080">Desktop - 16:9</option>
-                            <option value="2560x1080">Ultrawide - 21:9</option>
-                            <option value="390x844">iPhone - 9:16</option>
-                            <option value="1024x768">iPad - 4:3</option>
-                        </select>
-                    </div>
-                    <div class="tool-row dimensions-row">
-                        <label>Dimensions</label>
-                        <div id="badge-dimensions">-- x --</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cmd-footer">
-                <button id="btn-theme" class="icon-btn theme-toggle" title="Toggle Theme (D)">
-                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Viewport Layer -->
-        <main id="viewport">
-            <!-- Mock Screen Container -->
-            <div id="mock-screen-wrapper">
-                <div id="mock-screen">
-                    <iframe id="design-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-downloads allow-same-origin" allow="camera; microphone; geolocation; fullscreen"></iframe>
-                    <div id="overlay-shield" class="hidden"></div>
-                    
-                    <!-- Resize Handles -->
-                    <div class="resize-handle handle-r"></div>
-                    <div class="resize-handle handle-b"></div>
-                    <div class="resize-handle handle-br"></div>
-                </div>
-            </div>
-        </main>
-
-        <!-- Gallery Overlay -->
-        <div id="gallery" class="overlay-layer hidden">
-            <div class="gallery-container">
-                <div class="gallery-header">
-                    <div class="gallery-search">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        <input type="text" id="gallery-search-input" placeholder="Search designs...">
-                    </div>
-                    <button class="gallery-close" id="btn-gallery-close" title="Close (Esc)">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <div class="gallery-grid" id="gallery-grid">
-                    <!-- Template populated by JS -->
-                </div>
-            </div>
+      <div class="cmd-controls">
+        <div class="cmd-nav group-section">
+          <button id="btn-prev" class="icon-btn" title="Previous Design" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="nav-indicator">
+            <span id="nav-count">0 / 0</span>
+            <span id="nav-title">Loading...</span>
+            <span id="nav-status"></span>
+          </div>
+          <button id="btn-next" class="icon-btn" title="Next Design" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
         </div>
 
-        <!-- Wizard Overlay (Empty State) -->
-        <div id="setup-wizard" class="overlay-layer hidden">
-            <div class="wizard-card">
-                <h2>Welcome to Design-View</h2>
-                <p>No valid <code>manifest.json</code> found in the design directory.</p>
-                <div class="code-block">
+        <div class="cmd-actions group-section">
+          <button id="btn-gallery" class="action-btn" title="Open Gallery (G)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Gallery</span>
+          </button>
+          <button id="btn-refresh" class="action-btn" title="Force Refresh (R)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 1 0 2.63-6.37L2 12"/></svg>
+            <span>Reload</span>
+          </button>
+          <button id="btn-copy-path" class="action-btn" title="Copy File Path">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 9h10v10H9z"></path><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Path</span>
+          </button>
+        </div>
+
+        <div class="cmd-tools group-section">
+          <div class="tool-row">
+            <label>Aspect Ratio</label>
+            <select id="select-ratio">
+              <option value="free">Free Resize</option>
+              <option value="1920x1080">Desktop - 16:9</option>
+              <option value="2560x1080">Ultrawide - 21:9</option>
+              <option value="390x844">iPhone - 9:16</option>
+              <option value="1024x768">iPad - 4:3</option>
+            </select>
+          </div>
+          <div class="tool-row dimensions-row">
+            <label>Dimensions</label>
+            <div id="badge-dimensions">-- x --</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-footer">
+        <button id="btn-theme" class="icon-btn theme-toggle" title="Toggle Theme (D)">
+          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main id="viewport">
+      <div id="mock-screen-wrapper">
+        <div id="mock-screen">
+          <iframe id="design-frame" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-downloads allow-same-origin" allow="camera; microphone; geolocation; fullscreen"></iframe>
+          <div id="frame-loading" class="frame-loading hidden">
+            <div class="spinner"></div>
+          </div>
+          <div id="overlay-shield" class="hidden"></div>
+          <div class="resize-handle handle-r"></div>
+          <div class="resize-handle handle-b"></div>
+          <div class="resize-handle handle-br"></div>
+        </div>
+      </div>
+    </main>
+
+    <div id="gallery" class="overlay-layer hidden">
+      <div class="gallery-container">
+        <div class="gallery-header">
+          <div class="gallery-search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="gallery-search-input" placeholder="Search designs...">
+          </div>
+          <button class="gallery-close" id="btn-gallery-close" title="Close (Esc)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="gallery-grid" id="gallery-grid"></div>
+      </div>
+    </div>
+
+    <div id="setup-wizard" class="overlay-layer hidden">
+      <div class="wizard-card">
+        <h2>Welcome to Design-View</h2>
+        <p>No valid <code>manifest.json</code> found in the design directory.</p>
+        <div class="code-block">
 <pre><code>[
   {
     "index": 1,
@@ -121,16 +118,40 @@
     "filePath": "welcome.html"
   }
 ]</code></pre>
-                </div>
-                <p class="mt">Create this file at the root of your workspace to begin.</p>
-            </div>
         </div>
-        
-        <!-- Dev Alert Overlay -->
-        <div id="dev-alert" class="toast-alert hidden"></div>
+        <p class="mt">Create this file at the root of your workspace to begin.</p>
+      </div>
     </div>
 
-    <!-- Modular Application Logic -->
-    <script type="module" src="/viewer/js/app.js"></script>
+    <div id="dim-modal" class="overlay-layer hidden">
+      <div class="dim-modal-card" id="dim-modal-card">
+        <h3>Set Dimensions</h3>
+        <div class="dim-input-grid">
+          <label>
+            Width
+            <input id="dim-input-w" type="number" min="240" step="10">
+          </label>
+          <label>
+            Height
+            <input id="dim-input-h" type="number" min="240" step="10">
+          </label>
+        </div>
+        <div class="dim-preset-grid">
+          <button type="button" data-dim-size="390x844">Phone 390 × 844</button>
+          <button type="button" data-dim-size="430x932">Phone 430 × 932</button>
+          <button type="button" data-dim-size="1024x768">Tablet 1024 × 768</button>
+          <button type="button" data-dim-size="1920x1080">Desktop 1920 × 1080</button>
+        </div>
+        <div class="dim-actions">
+          <button type="button" id="btn-dim-cancel" class="dim-btn secondary">Cancel</button>
+          <button type="button" id="btn-dim-apply" class="dim-btn primary">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="dev-alert" class="toast-alert hidden"></div>
+  </div>
+
+  <script type="module" src="/viewer/js/app.js"></script>
 </body>
 </html>

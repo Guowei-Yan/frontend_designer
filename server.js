@@ -3,12 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const { WebSocketServer } = require('ws');
 const chokidar = require('chokidar');
-const open = require('open');
 
 const PORT = process.env.PORT || 4400;
-
-// Parse arguments
 const args = process.argv.slice(2);
+
 let designDir = process.env.DESIGN_DIR || process.cwd();
 const dirIndex = args.indexOf('--dir');
 if (dirIndex > -1 && args.length > dirIndex + 1) {
@@ -19,108 +17,162 @@ const manifestName = process.env.MANIFEST_NAME || 'manifest.json';
 const manifestPath = path.join(designDir, manifestName);
 
 const MIME_TYPES = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.css': 'text/css',
-  '.json': 'application/json',
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
-  '.svg': 'image/svg+xml'
+  '.jpeg': 'image/jpeg',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.ico': 'image/x-icon',
+  '.txt': 'text/plain; charset=utf-8'
 };
 
-const server = http.createServer((req, res) => {
-  // CORS for convenience
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  let filePath = '';
-
-  if (req.url === '/') {
-    filePath = path.join(__dirname, 'viewer', 'index.html');
-  } else if (req.url === '/api/manifest') {
-    filePath = manifestPath;
-  } else if (req.url.startsWith('/viewer/')) {
-    filePath = path.join(__dirname, req.url);
-  } else {
-    // Serve from design directory for everything else
-    filePath = path.join(designDir, req.url.split('?')[0]);
+const resolveInside = (baseDir, requestPath) => {
+  const base = path.resolve(baseDir);
+  const normalized = String(requestPath || '').replace(/^\/+/, '');
+  const resolved = path.resolve(base, normalized);
+  if (resolved === base || resolved.startsWith(base + path.sep)) {
+    return resolved;
   }
+  return null;
+};
 
+const sendFile = (res, filePath) => {
   const extname = String(path.extname(filePath)).toLowerCase();
   const contentType = MIME_TYPES[extname] || 'application/octet-stream';
-
   fs.readFile(filePath, (err, content) => {
     if (err) {
       if (err.code === 'ENOENT') {
-        if (req.url === '/api/manifest') {
-          // Send empty layout for wizard state instead of 404
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify([], null, 2), 'utf-8');
-        } else {
-          res.writeHead(404);
-          res.end('File not found: ' + req.url);
-        }
-      } else {
-        res.writeHead(500);
-        res.end('Server Error: ' + err.code);
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end(`File not found: ${filePath}`);
+        return;
       }
-    } else {
-      res.writeHead(200, { 'Content-Type': contentType });
-      res.end(content, 'utf-8');
+      res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end(`Server Error: ${err.code}`);
+      return;
     }
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(content);
   });
+};
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store');
+
+  let pathname = '/';
+  try {
+    const parsed = new URL(req.url, `http://${req.headers.host}`);
+    pathname = decodeURIComponent(parsed.pathname);
+  } catch (e) {
+    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Invalid request URL');
+    return;
+  }
+
+  if (pathname === '/') {
+    const indexPath = path.join(__dirname, 'viewer', 'index.html');
+    sendFile(res, indexPath);
+    return;
+  }
+
+  if (pathname === '/api/manifest') {
+    fs.readFile(manifestPath, (err, content) => {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end('[]');
+          return;
+        }
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end(`Server Error: ${err.code}`);
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(content);
+    });
+    return;
+  }
+
+  let filePath = null;
+  if (pathname.startsWith('/viewer/')) {
+    filePath = resolveInside(__dirname, pathname.slice(1));
+  } else {
+    filePath = resolveInside(designDir, pathname);
+  }
+
+  if (!filePath) {
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Forbidden');
+    return;
+  }
+
+  sendFile(res, filePath);
 });
 
-// WebSocket Server
 const wss = new WebSocketServer({ server });
+
 const notifyClients = (message) => {
   const payload = JSON.stringify(message);
-  wss.clients.forEach(client => {
+  wss.clients.forEach((client) => {
     if (client.readyState === 1) {
       client.send(payload);
     }
   });
 };
 
-// File Watcher
 console.log(`Watching for designs in: ${designDir}`);
 console.log(`Watching for manifest at: ${manifestPath}`);
 
 let debounceTimer = null;
-const watcher = chokidar.watch(designDir, {
-  ignored: /(^|[\/\\])\../, // ignore dotfiles
-  persistent: true
-});
 
-watcher.on('change', (changedPath) => {
+const scheduleBroadcast = (eventType, changedPath) => {
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
-    // Determine if it was the manifest or a design file
-    if (changedPath === manifestPath) {
-      fs.readFile(manifestPath, 'utf-8', (err, data) => {
-        if (!err) {
-          try {
-            const manifest = JSON.parse(data);
-            notifyClients({ type: 'MANIFEST_CHANGE', manifest });
-          } catch (e) {
-            console.error('Invalid manifest JSON:', e.message);
-          }
-        }
-      });
-    } else {
-      // It's a design file change
-      // Send path relative to designDir matching how client requests it
-      const relativePath = '/' + path.relative(designDir, changedPath).replace(/\\/g, '/');
-      notifyClients({ type: 'FILE_CHANGE', filePath: relativePath });
+    const resolvedChanged = path.resolve(changedPath);
+    const resolvedManifest = path.resolve(manifestPath);
+
+    if (resolvedChanged === resolvedManifest) {
+      notifyClients({ type: 'MANIFEST_CHANGE' });
+      return;
     }
+
+    const relativePath = path.relative(designDir, resolvedChanged).replace(/\\/g, '/');
+    if (!relativePath || relativePath.startsWith('..')) {
+      return;
+    }
+
+    notifyClients({
+      type: 'FILE_CHANGE',
+      filePath: `/${relativePath}`,
+      event: eventType
+    });
   }, 500);
+};
+
+const watcher = chokidar.watch(designDir, {
+  ignored: /(^|[\/\\])\../,
+  persistent: true,
+  ignoreInitial: true
 });
 
-server.listen(PORT, async () => {
-  console.log(`Design-View server running on http://localhost:${PORT}`);
-  // Try to open browser
+watcher.on('add', (changedPath) => scheduleBroadcast('add', changedPath));
+watcher.on('change', (changedPath) => scheduleBroadcast('change', changedPath));
+watcher.on('unlink', (changedPath) => scheduleBroadcast('unlink', changedPath));
+
+const openInBrowser = async (url) => {
   try {
-    await open(`http://localhost:${PORT}`);
+    const mod = await import('open');
+    await mod.default(url);
   } catch (e) {
-    // Ignore if fails
   }
+};
+
+server.listen(PORT, () => {
+  const url = `http://localhost:${PORT}`;
+  console.log(`Design-View server running on ${url}`);
+  openInBrowser(url);
 });

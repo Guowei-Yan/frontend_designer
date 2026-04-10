@@ -1,5 +1,4 @@
 :root {
-    /* Premium Aesthetic Color Palette */
     --color-bg: #F8FAFC;
     --color-surface: #FFFFFF;
     --color-surface-hover: #F1F5F9;
@@ -9,22 +8,22 @@
     --color-accent: #3B82F6;
     --color-accent-hover: #2563EB;
     --color-danger: #EF4444;
-    
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    
+
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    
+
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    
+
     --cmd-width: 280px;
-    --cmd-height-mobile: 80px;
-    
+    --cmd-height-mobile: 92px;
+
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -37,13 +36,17 @@
     --color-text-secondary: #9CA3AF;
     --color-accent: #60A5FA;
     --color-accent-hover: #3B82F6;
-    
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
     font-family: var(--font-sans);
@@ -59,11 +62,9 @@ body {
     display: flex;
     height: 100%;
     width: 100%;
+    position: relative;
 }
 
-/* ==================================
-   Command Bar (Adaptive Layout)
-   ================================== */
 #command-bar {
     background: var(--color-surface);
     border-right: 1px solid var(--color-border);
@@ -106,7 +107,6 @@ body {
     gap: 12px;
 }
 
-/* Navigation Block */
 .cmd-nav {
     flex-direction: row;
     align-items: center;
@@ -145,7 +145,8 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 120px;
+    width: 140px;
+    gap: 2px;
 }
 
 #nav-count {
@@ -165,7 +166,17 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Action Buttons */
+#nav-status {
+    min-height: 16px;
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+}
+
+#nav-status.slow {
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
 .action-btn {
     display: flex;
     align-items: center;
@@ -186,7 +197,6 @@ body {
     border-color: var(--color-accent);
 }
 
-/* Tools */
 .tool-row {
     display: flex;
     flex-direction: column;
@@ -230,9 +240,9 @@ select:focus {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
-/* Footer */
 .cmd-footer {
     padding: 16px 20px;
     border-top: 1px solid var(--color-border);
@@ -240,15 +250,22 @@ select:focus {
     justify-content: flex-end;
 }
 
-.theme-toggle .icon-sun { display: block; }
-.theme-toggle .icon-moon { display: none; }
+.theme-toggle .icon-sun {
+    display: block;
+}
 
-[data-viewer-theme="dark"] .theme-toggle .icon-sun { display: none; }
-[data-viewer-theme="dark"] .theme-toggle .icon-moon { display: block; }
+.theme-toggle .icon-moon {
+    display: none;
+}
 
-/* ==================================
-   Main Viewport
-   ================================== */
+[data-viewer-theme="dark"] .theme-toggle .icon-sun {
+    display: none;
+}
+
+[data-viewer-theme="dark"] .theme-toggle .icon-moon {
+    display: block;
+}
+
 #viewport {
     flex-grow: 1;
     position: relative;
@@ -257,8 +274,7 @@ select:focus {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* Grid background pattern */
-    background-image: 
+    background-image:
         linear-gradient(to right, var(--color-border) 1px, transparent 1px),
         linear-gradient(to bottom, var(--color-border) 1px, transparent 1px);
     background-size: 40px 40px;
@@ -272,7 +288,7 @@ select:focus {
     justify-content: center;
     width: 100%;
     height: 100%;
-    padding: 40px; /* Safe area around frame */
+    padding: 40px;
 }
 
 #mock-screen {
@@ -282,7 +298,6 @@ select:focus {
     border-radius: var(--radius-sm);
     overflow: hidden;
     transition: box-shadow var(--transition);
-    /* Dimensions set by JS */
 }
 
 #mock-screen iframe {
@@ -290,13 +305,12 @@ select:focus {
     height: 100%;
     border: none;
     display: block;
-    background: #fff; /* Ensure white base unless overridden by theme */
+    background: #fff;
 }
 
-/* ==================================
-   Overlays & Alerts
-   ================================== */
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 .overlay-layer {
     position: absolute;
@@ -319,8 +333,17 @@ select:focus {
     border: 1px solid var(--color-border);
 }
 
-.wizard-card h2 { margin-bottom: 12px; font-family: var(--font-display); }
-.wizard-card p { margin-bottom: 24px; color: var(--color-text-secondary); line-height: 1.5; }
+.wizard-card h2 {
+    margin-bottom: 12px;
+    font-family: var(--font-display);
+}
+
+.wizard-card p {
+    margin-bottom: 24px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
 .code-block {
     background: #1E293B;
     color: #F8FAFC;
@@ -330,11 +353,136 @@ select:focus {
     font-size: 0.85rem;
     overflow-x: auto;
 }
-.mt { margin-top: 24px; }
 
-/* Responsive: Mobile Layout */
+.mt {
+    margin-top: 24px;
+}
+
+.toast-alert {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1200;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    max-width: min(420px, calc(100vw - 40px));
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.dim-modal-card {
+    width: min(520px, calc(100vw - 24px));
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dim-modal-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+}
+
+.dim-input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.dim-input-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+}
+
+.dim-input-grid input {
+    height: 42px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    padding: 0 12px;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+.dim-input-grid input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.dim-preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.dim-preset-grid button {
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-primary);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 0.82rem;
+    text-align: left;
+}
+
+.dim-preset-grid button:hover {
+    border-color: var(--color-accent);
+    background: var(--color-surface-hover);
+}
+
+.dim-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.dim-btn {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 600;
+}
+
+.dim-btn.secondary {
+    background: transparent;
+    color: var(--color-text-primary);
+}
+
+.dim-btn.secondary:hover {
+    background: var(--color-surface-hover);
+}
+
+.dim-btn.primary {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: #fff;
+}
+
+.dim-btn.primary:hover {
+    background: var(--color-accent-hover);
+}
+
 @media (max-width: 768px) {
-    #app { flex-direction: column-reverse; }
+    #app {
+        flex-direction: column-reverse;
+    }
+
     #command-bar {
         width: 100%;
         height: var(--cmd-height-mobile);
@@ -342,17 +490,101 @@ select:focus {
         align-items: center;
         border-right: none;
         border-top: 1px solid var(--color-border);
-        padding: 0 12px;
+        padding: 0 8px;
+        gap: 8px;
     }
-    .cmd-brand { display: none; }
-    .cmd-controls { 
-        flex-direction: row; 
-        padding: 0; 
-        align-items: center; 
-        justify-content: space-between;
-        gap: 12px;
+
+    .cmd-brand {
+        display: none;
     }
-    .cmd-footer { display: none; }
-    .cmd-actions span, .tool-row { display: none; } /* Hide complex tools on bottom bar */
-    .action-btn { padding: 12px; border: none; }
+
+    .cmd-controls {
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+    }
+
+    .cmd-controls::-webkit-scrollbar {
+        display: none;
+    }
+
+    .group-section {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cmd-nav {
+        background: transparent;
+        border: none;
+        padding: 0;
+        gap: 4px;
+    }
+
+    .nav-indicator {
+        display: none;
+    }
+
+    .action-btn {
+        padding: 10px;
+        border-radius: 10px;
+        min-width: 44px;
+        justify-content: center;
+    }
+
+    .cmd-actions .action-btn span {
+        display: none;
+    }
+
+    .cmd-tools {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tool-row {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .tool-row label {
+        display: none;
+    }
+
+    .tool-row select {
+        width: auto;
+        min-width: 148px;
+        font-size: 0.8rem;
+        padding: 8px 10px;
+    }
+
+    #badge-dimensions {
+        min-width: 110px;
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .cmd-footer {
+        display: flex;
+        padding: 0;
+        border-top: none;
+        margin-left: auto;
+    }
+
+    .dim-modal-card {
+        width: calc(100vw - 12px);
+        height: auto;
+        border-radius: 12px;
+    }
+
+    .dim-preset-grid {
+        grid-template-columns: 1fr;
+    }
 }
