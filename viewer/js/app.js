@@ -1,6 +1,7 @@
 import { ManifestManager } from './manifest.js';
 import { Scaler } from './scaler.js';
 import { ResizeEngine } from './resizeEngine.js';
+import { Gallery } from './gallery.js';
 
 // DOM Elements
 const DOM = {
@@ -10,6 +11,7 @@ const DOM = {
     navTitle: document.getElementById('nav-title'),
     btnPrev: document.getElementById('btn-prev'),
     btnNext: document.getElementById('btn-next'),
+    btnRefresh: document.getElementById('btn-refresh'),
     alert: document.getElementById('dev-alert'),
     themeBtn: document.getElementById('btn-theme'),
     mockWrapper: document.getElementById('mock-screen-wrapper'),
@@ -23,6 +25,7 @@ class App {
         this.manifest = new ManifestManager();
         this.scaler = new Scaler(DOM.mockWrapper, DOM.mockScreen);
         this.resizeEngine = new ResizeEngine(DOM.mockScreen, this.scaler, DOM.badge, DOM.ratioSelect);
+        this.gallery = new Gallery(this.manifest, (index) => this.loadDesign(index));
         this.init();
     }
 
@@ -31,7 +34,6 @@ class App {
         // Initial scale
         setTimeout(() => this.scaler.rescale(), 50);
 
-        
         const hasManifest = await this.manifest.loadManifest();
         if (!hasManifest) {
             this.showWizard();
@@ -63,10 +65,15 @@ class App {
             DOM.navCount.textContent = `${pos} / ${entries.length}`;
             DOM.navTitle.textContent = entry.title || `Design ${index}`;
             
-            // Load Iframe
-            DOM.iframe.src = `/${entry.filePath}`;
+            // Load Iframe - append timestamp to beat browser caching during live-reload
+            const url = new URL(`/${entry.filePath}`, window.location.origin);
+            url.searchParams.set('cache', Date.now());
+            DOM.iframe.src = url.toString();
             
             this.updateNavButtons();
+            
+            // Push history state if we add routing later
+            // window.history.replaceState({ index }, '', `?p=${index}`);
         }
     }
 
@@ -79,6 +86,13 @@ class App {
         DOM.alert.textContent = msg;
         DOM.alert.classList.remove('hidden');
         setTimeout(() => DOM.alert.classList.add('hidden'), 4000);
+    }
+    
+    refreshFrame() {
+        const entry = this.manifest.getCurrentEntry();
+        if (entry) {
+            this.loadDesign(entry.index);
+        }
     }
 
     setupEventListeners() {
@@ -95,12 +109,52 @@ class App {
             const next = this.manifest.getNextIndex();
             if (next !== null) this.loadDesign(next);
         });
+        
+        // Refresh
+        DOM.btnRefresh.addEventListener('click', () => this.refreshFrame());
 
         // Basic Theme Toggle (Shell level)
         DOM.themeBtn.addEventListener('click', () => {
             const html = document.documentElement;
             const current = html.getAttribute('data-viewer-theme');
             html.setAttribute('data-viewer-theme', current === 'dark' ? 'light' : 'dark');
+        });
+        
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ignore if user is typing in an input (like gallery search)
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    e.target.blur();
+                    if (this.gallery.isOpen) this.gallery.close();
+                }
+                return;
+            }
+
+            switch(e.key.toLowerCase()) {
+                case 'arrowright':
+                    const next = this.manifest.getNextIndex();
+                    if (next !== null) this.loadDesign(next);
+                    break;
+                case 'arrowleft':
+                    const prev = this.manifest.getPrevIndex();
+                    if (prev !== null) this.loadDesign(prev);
+                    break;
+                case 'g':
+                    this.gallery.toggle();
+                    break;
+                case 'r':
+                    this.refreshFrame();
+                    break;
+                case 'd':
+                    DOM.themeBtn.click();
+                    break;
+                case 'escape':
+                    if (this.gallery.isOpen) {
+                        this.gallery.close();
+                    }
+                    break;
+            }
         });
     }
 }
@@ -109,3 +163,6 @@ class App {
 window.addEventListener('DOMContentLoaded', () => {
     window.viewerApp = new App();
 });
+
+
+
