@@ -3,162 +3,250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Plan-Local Home Feed</title>
+  <title>Plan-Local Ultimate Feed</title>
   <link rel="stylesheet" href="styles/feed.css">
 </head>
 <body>
 
-<div class="app-layout">
-  <nav class="main-nav">
-    <div class="nav-logo">Plan-Local</div>
-    <div class="nav-item active">首页</div>
-    <div class="nav-item">消息</div>
-    <div class="nav-item">我的</div>
-  </nav>
-
-  <main class="feed-container">
-    <header class="feed-header">
-      <div class="location-bar">
-        <div class="location-pin">📍 珀斯 Perth</div>
-        <div class="admin-switcher" title="马甲切换">A</div>
+<div class="app-shell">
+  
+  <!-- 左侧导航 (仅电脑端可见) -->
+  <aside class="sidebar-left">
+    <div class="brand-logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      Plan-Local
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-item active">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        首页发现
       </div>
-      <div class="tabs">
-        <div class="tab active">全部</div>
-        <div class="tab">求助</div>
-        <div class="tab">推荐</div>
-        <div class="tab">活动</div>
-        <div class="tab">闲聊</div>
+      <div class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg>
+        消息通知
+      </div>
+      <div class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+        积分商城
+      </div>
+      <div class="nav-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        我的主页
+      </div>
+    </nav>
+    <button class="btn-post-desktop">发布动态</button>
+  </aside>
+
+  <!-- 中间核心信息流 -->
+  <main class="feed-column">
+    
+    <!-- 移动端顶部 (仅手机端可见) -->
+    <header class="mobile-header">
+      <div class="mobile-top-bar">
+        <div class="mobile-location">
+          珀斯本地生活
+        </div>
+        <div class="majia-avatar" title="马甲切换">主</div>
+      </div>
+      <div class="category-tabs">
+        <div class="tab-pill active">全部</div>
+        <div class="tab-pill">求助</div>
+        <div class="tab-pill">推荐</div>
+        <div class="tab-pill">活动</div>
+        <div class="tab-pill">闲聊</div>
       </div>
     </header>
 
+    <!-- 1. 中农：标准图文帖 -->
     <article class="post-card">
       <div class="post-header">
-        <div class="user-info">
-          <div class="avatar" data-level="middle">
-            <span class="badge" data-level="middle"></span>
+        <div class="user-profile">
+          <div class="avatar-wrapper">
+            <div class="avatar-img"></div>
+            <div class="level-badge middle"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M20 6L9 17l-5-5"></path></svg></div>
           </div>
-          <div class="meta">
-            <span class="nickname">Perth百事通</span>
-            <span class="time">10 分钟前</span>
-          </div>
-        </div>
-      </div>
-      <div class="post-content">
-        <span class="tag tag-chat">[闲聊]</span>
-        周末去 City 逛了一圈，发现北桥新开了一家面馆，味道居然出奇的不错。有人去试过吗？
-      </div>
-      <div class="media-grid" data-count="2">
-        <div></div>
-        <div></div>
-      </div>
-      <div class="action-bar">
-        <button class="action-btn">
-          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <span>12</span>
-        </button>
-        <button class="action-btn">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
-          <span>5</span>
-        </button>
-      </div>
-    </article>
-
-    <article class="post-card solved">
-      <div class="post-header">
-        <div class="user-info">
-          <div class="avatar" data-level="landlord">
-            <span class="badge" data-level="landlord"></span>
-          </div>
-          <div class="meta">
-            <span class="nickname">老王修水电</span>
-            <span class="time">2 小时前</span>
+          <div class="user-meta">
+            <span class="user-name">Perth百事通</span>
+            <span class="post-time">10 分钟前</span>
           </div>
         </div>
       </div>
-      <div class="solved-stamp">✓ 已解决</div>
-      <div class="post-content">
-        <span class="tag tag-help">[求助]</span>
-        急！Canning Vale 附近有没有靠谱的通下水道师傅？厨房水槽完全堵死了，试了超市买的药水没用。
+      <div class="post-body">
+        <span class="tag-inline">探店推荐</span>
+        周末去 City 逛了一圈，发现北桥新开了一家面馆，味道居然出奇的不错。牛肉炖得很烂，汤底有明显的药膳香气。
       </div>
-      <div class="action-bar">
-        <button class="action-btn">
-          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <span>45</span>
-        </button>
-        <button class="action-btn">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
-          <span>18</span>
-        </button>
+      <div class="bento-grid" data-count="3">
+        <div class="bento-item"></div>
+        <div class="bento-item"></div>
+        <div class="bento-item"></div>
+      </div>
+      <div class="post-actions">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> 12</button>
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg> 5</button>
       </div>
     </article>
 
-    <article class="post-card scanning">
-      <div class="post-header">
-        <div class="user-info">
-          <div class="avatar" data-level="wealthy"></div>
-          <div class="meta">
-            <span class="nickname">匿名用户_89X</span>
-            <span class="time">刚刚 <span class="edit-window">· 黄金编辑期 04:59</span></span>
-          </div>
-        </div>
-      </div>
-      <div class="post-content">
-        <span class="tag tag-chat">[自动分类中]</span>
-        大家推荐一下好用的本地二手车检测服务吧？
-        <br><br>
-        <span style="color: var(--state-scanning); font-size: 13px;">AI 安全扫描中，仅自己可见...</span>
-      </div>
-    </article>
-
-    <article class="post-card">
-      <div class="status-banner">
-        ⚠️ AI 服务延迟，当前内容已通过本地词库拦截，处于先发后审状态。
+    <!-- 2. 地主：求助工单帖 -->
+    <article class="post-card type-help">
+      <div class="help-status-bar open">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        急需帮助
       </div>
       <div class="post-header">
-        <div class="user-info">
-          <div class="avatar" data-level="middle">
-            <span class="badge" data-level="middle"></span>
+        <div class="user-profile">
+          <div class="avatar-wrapper level-landlord">
+            <div class="avatar-img"></div>
+            <div class="level-badge landlord"><svg width="12" height="12" viewBox="0 0 24 24" fill="#D97706"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
           </div>
-          <div class="meta">
-            <span class="nickname">夜猫子</span>
-            <span class="time">1 分钟前</span>
+          <div class="user-meta">
+            <span class="user-name">老王修水电</span>
+            <span class="post-time">2 小时前</span>
           </div>
         </div>
       </div>
-      <div class="post-content">
-        半夜睡不着，有人在玩黑神话悟空吗？卡在小黄龙了。
+      <div class="post-body" style="font-size: 18px; font-weight: 500;">
+        Canning Vale 附近有没有靠谱的通下水道师傅？厨房水槽完全堵死了，试了超市买的药水没用，积水已经漫出来了。
+      </div>
+      <div class="post-actions">
+        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg> 45 条建议</button>
       </div>
     </article>
 
+    <!-- 3. 富农：AI 预审中 -->
     <article class="post-card">
       <div class="post-header">
-        <div class="user-info">
-          <div class="avatar" data-level="peasant"></div>
-          <div class="meta">
-            <span class="nickname">Transient_User</span>
-            <span class="time">3 小时前</span>
+        <div class="user-profile">
+          <div class="avatar-wrapper">
+            <div class="avatar-img"></div>
+            <div class="level-badge wealthy"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+          </div>
+          <div class="user-meta">
+            <span class="user-name">匿名用户_89X</span>
+            <span class="post-time">
+              刚刚 发布
+              <span class="golden-edit-tag">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                04:59 可编辑
+              </span>
+            </span>
           </div>
         </div>
       </div>
-      <div class="post-content">
-        路过点个赞。
+      <div class="post-body ai-skeleton-mask">
+        大家推荐一下好用的本地二手车检测服务吧？之前看中了一辆车，但是怕有暗病不敢下手。
       </div>
-      <div class="action-bar" style="background-color: var(--bg-app); border-radius: 8px; padding: 12px; margin-top: 12px;">
-        <span style="font-size: 13px; color: var(--text-muted);">您当前为匿名状态，投票权重为 0.1。注册以解锁完整权限。</span>
-        <button class="action-btn" style="background-color: var(--primary); color: var(--bg-card);">注册</button>
+      <div class="ai-status-text">
+        <div class="ai-pulse"></div>
+        内容安全护航中，当前仅自己可见
       </div>
     </article>
 
-    <div style="height: 100px;"></div>
+    <!-- 4. Scheme Y 降级态 -->
+    <article class="post-card">
+      <div class="scheme-y-banner">
+        <svg class="scheme-y-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+        <div class="scheme-y-content">
+          <span class="scheme-y-title">极速发布模式已激活</span>
+          <span class="scheme-y-desc">当前网络拥挤，内容已通过本地安全校验上线，稍后将完成最终智能审核。</span>
+        </div>
+      </div>
+      <div class="post-header">
+        <div class="user-profile">
+          <div class="avatar-wrapper">
+            <div class="avatar-img"></div>
+            <div class="level-badge middle"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M20 6L9 17l-5-5"></path></svg></div>
+          </div>
+          <div class="user-meta">
+            <span class="user-name">夜猫子</span>
+            <span class="post-time">1 分钟前</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-body">
+        半夜睡不着，有人在玩黑神话悟空吗？卡在小黄龙了，求指点。
+      </div>
+    </article>
+
+    <!-- 全新：信息流内嵌游客转化卡片 (Inline Promo Card) -->
+    <!-- 这个卡片只对未登录的游客显示，优雅地打断信息流，引导注册 -->
+    <div class="feed-promo-card">
+      <div class="promo-content">
+        <div class="promo-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          解锁完整本地生活
+        </div>
+        <div class="promo-desc">
+          您当前为游客状态，互动权重受限 (0.1x)。注册成为正式居民，即可发布求助、参与讨论并积累土地积分。
+        </div>
+      </div>
+      <button class="btn-promo">立即注册</button>
+    </div>
+
   </main>
+
+  <!-- 右侧语境栏 (仅电脑端可见) -->
+  <aside class="sidebar-right">
+    <div class="widget-card">
+      <div class="widget-title">珀斯本地热搜</div>
+      <div class="trending-list">
+        <div class="trending-item">
+          <span class="trending-tag">生活互助</span>
+          <span class="trending-title">南区哪家华人超市菜最新鲜？</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-tag">二手交易</span>
+          <span class="trending-title">毕业回国，全套家具打包出</span>
+        </div>
+        <div class="trending-item">
+          <span class="trending-tag">周末活动</span>
+          <span class="trending-title">Fremantle 周末集市打卡攻略</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="widget-card">
+      <div class="widget-title">社区地主榜</div>
+      <div class="trending-list">
+        <div class="user-profile">
+          <div class="avatar-wrapper level-landlord" style="width: 32px; height: 32px;">
+            <div class="avatar-img"></div>
+          </div>
+          <span class="user-name" style="font-size: 14px;">老王修水电</span>
+        </div>
+        <div class="user-profile">
+          <div class="avatar-wrapper level-landlord" style="width: 32px; height: 32px;">
+            <div class="avatar-img"></div>
+          </div>
+          <span class="user-name" style="font-size: 14px;">珀斯百事通</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
 </div>
 
-<div class="mobile-bottom-bar">
-  <div class="tab-icon active"></div>
-  <div class="tab-icon"></div>
-  <div class="tab-icon"></div>
-  <div class="tab-icon"></div>
-</div>
+<!-- 移动端底部 Tab Bar -->
+<nav class="mobile-tab-bar">
+  <div class="tab-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+    <span class="tab-label">首页</span>
+  </div>
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg>
+    <span class="tab-label">消息</span>
+  </div>
+  <div class="tab-item post-btn">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"></circle><line x1="12" y1="8" x2="12" y2="16" stroke="white" stroke-width="2"></line><line x1="8" y1="12" x2="16" y2="12" stroke="white" stroke-width="2"></line></svg>
+  </div>
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+    <span class="tab-label">商城</span>
+  </div>
+  <div class="tab-item">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    <span class="tab-label">我的</span>
+  </div>
+</nav>
 
 </body>
 </html>

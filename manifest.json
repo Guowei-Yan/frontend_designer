@@ -1,8 +1,8 @@
 [
   {
     "index": 1,
-    "title": "Home Feed",
-    "description": "首页信息流: 包含中农、地主求助、AI审核中及匿名视角",
+    "title": "Home Feed - Ultimate",
+    "description": "三栏响应式架构、专属求助工单设计、iOS级移动端体验、柔性AI交互",
     "filePath": "01-home-feed.html"
   }
 ]
