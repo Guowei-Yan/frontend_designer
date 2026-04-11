@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Plan-Local Home Feed</title>
+  <link rel="stylesheet" href="styles/feed.css">
+</head>
+<body>
+
+<div class="app-layout">
+  <nav class="main-nav">
+    <div class="nav-logo">Plan-Local</div>
+    <div class="nav-item active">首页</div>
+    <div class="nav-item">消息</div>
+    <div class="nav-item">我的</div>
+  </nav>
+
+  <main class="feed-container">
+    <header class="feed-header">
+      <div class="location-bar">
+        <div class="location-pin">📍 珀斯 Perth</div>
+        <div class="admin-switcher" title="马甲切换">A</div>
+      </div>
+      <div class="tabs">
+        <div class="tab active">全部</div>
+        <div class="tab">求助</div>
+        <div class="tab">推荐</div>
+        <div class="tab">活动</div>
+        <div class="tab">闲聊</div>
+      </div>
+    </header>
+
+    <article class="post-card">
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar" data-level="middle">
+            <span class="badge" data-level="middle"></span>
+          </div>
+          <div class="meta">
+            <span class="nickname">Perth百事通</span>
+            <span class="time">10 分钟前</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-content">
+        <span class="tag tag-chat">[闲聊]</span>
+        周末去 City 逛了一圈，发现北桥新开了一家面馆，味道居然出奇的不错。有人去试过吗？
+      </div>
+      <div class="media-grid" data-count="2">
+        <div></div>
+        <div></div>
+      </div>
+      <div class="action-bar">
+        <button class="action-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>12</span>
+        </button>
+        <button class="action-btn">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
+          <span>5</span>
+        </button>
+      </div>
+    </article>
+
+    <article class="post-card solved">
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar" data-level="landlord">
+            <span class="badge" data-level="landlord"></span>
+          </div>
+          <div class="meta">
+            <span class="nickname">老王修水电</span>
+            <span class="time">2 小时前</span>
+          </div>
+        </div>
+      </div>
+      <div class="solved-stamp">✓ 已解决</div>
+      <div class="post-content">
+        <span class="tag tag-help">[求助]</span>
+        急！Canning Vale 附近有没有靠谱的通下水道师傅？厨房水槽完全堵死了，试了超市买的药水没用。
+      </div>
+      <div class="action-bar">
+        <button class="action-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>45</span>
+        </button>
+        <button class="action-btn">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/></svg>
+          <span>18</span>
+        </button>
+      </div>
+    </article>
+
+    <article class="post-card scanning">
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar" data-level="wealthy"></div>
+          <div class="meta">
+            <span class="nickname">匿名用户_89X</span>
+            <span class="time">刚刚 <span class="edit-window">· 黄金编辑期 04:59</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="post-content">
+        <span class="tag tag-chat">[自动分类中]</span>
+        大家推荐一下好用的本地二手车检测服务吧？
+        <br><br>
+        <span style="color: var(--state-scanning); font-size: 13px;">AI 安全扫描中，仅自己可见...</span>
+      </div>
+    </article>
+
+    <article class="post-card">
+      <div class="status-banner">
+        ⚠️ AI 服务延迟，当前内容已通过本地词库拦截，处于先发后审状态。
+      </div>
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar" data-level="middle">
+            <span class="badge" data-level="middle"></span>
+          </div>
+          <div class="meta">
+            <span class="nickname">夜猫子</span>
+            <span class="time">1 分钟前</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-content">
+        半夜睡不着，有人在玩黑神话悟空吗？卡在小黄龙了。
+      </div>
+    </article>
+
+    <article class="post-card">
+      <div class="post-header">
+        <div class="user-info">
+          <div class="avatar" data-level="peasant"></div>
+          <div class="meta">
+            <span class="nickname">Transient_User</span>
+            <span class="time">3 小时前</span>
+          </div>
+        </div>
+      </div>
+      <div class="post-content">
+        路过点个赞。
+      </div>
+      <div class="action-bar" style="background-color: var(--bg-app); border-radius: 8px; padding: 12px; margin-top: 12px;">
+        <span style="font-size: 13px; color: var(--text-muted);">您当前为匿名状态，投票权重为 0.1。注册以解锁完整权限。</span>
+        <button class="action-btn" style="background-color: var(--primary); color: var(--bg-card);">注册</button>
+      </div>
+    </article>
+
+    <div style="height: 100px;"></div>
+  </main>
+</div>
+
+<div class="mobile-bottom-bar">
+  <div class="tab-icon active"></div>
+  <div class="tab-icon"></div>
+  <div class="tab-icon"></div>
+  <div class="tab-icon"></div>
+</div>
+
+</body>
+</html>
