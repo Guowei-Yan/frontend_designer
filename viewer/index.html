@@ -54,10 +54,27 @@
             <label>Aspect Ratio</label>
             <select id="select-ratio">
               <option value="free">Free Resize</option>
-              <option value="1920x1080">Desktop - 16:9</option>
-              <option value="2560x1080">Ultrawide - 21:9</option>
-              <option value="390x844">iPhone - 9:16</option>
-              <option value="1024x768">iPad - 4:3</option>
+              <optgroup label="Desktop">
+                <option value="1920x1080">Full HD — 1920 × 1080</option>
+                <option value="2560x1440">QHD — 2560 × 1440</option>
+                <option value="2560x1080">Ultrawide — 2560 × 1080</option>
+                <option value="1440x900">MacBook Air 13" — 1440 × 900</option>
+              </optgroup>
+              <optgroup label="iPhone">
+                <option value="393x852">iPhone 15 Pro — 393 × 852</option>
+                <option value="430x932">iPhone 15 Pro Max — 430 × 932</option>
+                <option value="390x844">iPhone 14 — 390 × 844</option>
+                <option value="375x667">iPhone SE — 375 × 667</option>
+              </optgroup>
+              <optgroup label="iPad">
+                <option value="834x1194">iPad Pro 11" — 834 × 1194</option>
+                <option value="1024x1366">iPad Pro 13" — 1024 × 1366</option>
+                <option value="820x1180">iPad Air — 820 × 1180</option>
+              </optgroup>
+              <optgroup label="Android">
+                <option value="412x915">Pixel 8 / Galaxy S24 — 412 × 915</option>
+                <option value="360x780">Galaxy S24 — 360 × 780</option>
+              </optgroup>
             </select>
           </div>
           <div class="tool-row dimensions-row">
@@ -137,10 +154,12 @@
           </label>
         </div>
         <div class="dim-preset-grid">
-          <button type="button" data-dim-size="390x844">Phone 390 × 844</button>
-          <button type="button" data-dim-size="430x932">Phone 430 × 932</button>
-          <button type="button" data-dim-size="1024x768">Tablet 1024 × 768</button>
-          <button type="button" data-dim-size="1920x1080">Desktop 1920 × 1080</button>
+          <button type="button" data-dim-size="393x852">iPhone 15 Pro · 393 × 852</button>
+          <button type="button" data-dim-size="430x932">iPhone 15 Pro Max · 430 × 932</button>
+          <button type="button" data-dim-size="834x1194">iPad Pro 11" · 834 × 1194</button>
+          <button type="button" data-dim-size="1024x1366">iPad Pro 13" · 1024 × 1366</button>
+          <button type="button" data-dim-size="1920x1080">Desktop FHD · 1920 × 1080</button>
+          <button type="button" data-dim-size="2560x1440">Desktop QHD · 2560 × 1440</button>
         </div>
         <div class="dim-actions">
           <button type="button" id="btn-dim-cancel" class="dim-btn secondary">Cancel</button>

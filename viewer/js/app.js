@@ -341,7 +341,6 @@ class App {
   }
 
   openDimModal() {
-    if (!window.matchMedia('(max-width: 768px)').matches) return;
     const dims = this.resizeEngine.getDimensions();
     DOM.dimInputW.value = String(dims.width);
     DOM.dimInputH.value = String(dims.height);
