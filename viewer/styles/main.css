@@ -209,6 +209,18 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.label-hint {
+    font-weight: 400;
+    font-size: 0.7rem;
+    opacity: 0.6;
+    cursor: help;
+    text-transform: none;
+    letter-spacing: 0;
 }
 
 select {
@@ -513,6 +525,8 @@ select:focus {
         overflow-x: auto;
         overflow-y: hidden;
         scrollbar-width: none;
+        flex-shrink: 0;
+        max-width: calc(100vw - 120px);
     }
 
     .cmd-controls::-webkit-scrollbar {
@@ -582,6 +596,7 @@ select:focus {
         padding: 0;
         border-top: none;
         margin-left: auto;
+        flex-shrink: 0;
     }
 
     .dim-modal-card {

@@ -43,6 +43,10 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6M3 12a9 9 0 1 0 2.63-6.37L2 12"/></svg>
             <span>Reload</span>
           </button>
+          <button id="btn-rotate" class="action-btn" title="Rotate Screen (O)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            <span>Rotate</span>
+          </button>
           <button id="btn-copy-path" class="action-btn" title="Copy File Path">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 9h10v10H9z"></path><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             <span>Path</span>
@@ -61,25 +65,25 @@
                 <option value="1440x900">MacBook Air 13" — 1440 × 900</option>
               </optgroup>
               <optgroup label="iPhone">
-                <option value="393x852">iPhone 15 Pro — 393 × 852</option>
-                <option value="430x932">iPhone 15 Pro Max — 430 × 932</option>
-                <option value="390x844">iPhone 14 — 390 × 844</option>
-                <option value="375x667">iPhone SE — 375 × 667</option>
+                <option value="393x852">iPhone 15 Pro — 1179 × 2556 @3×</option>
+                <option value="430x932">iPhone 15 Pro Max — 1290 × 2796 @3×</option>
+                <option value="390x844">iPhone 14 — 1170 × 2532 @3×</option>
+                <option value="375x667">iPhone SE — 750 × 1334 @2×</option>
               </optgroup>
               <optgroup label="iPad">
-                <option value="834x1194">iPad Pro 11" — 834 × 1194</option>
-                <option value="1024x1366">iPad Pro 13" — 1024 × 1366</option>
-                <option value="820x1180">iPad Air — 820 × 1180</option>
+                <option value="834x1194">iPad Pro 11" — 1668 × 2388 @2×</option>
+                <option value="1024x1366">iPad Pro 13" — 2048 × 2732 @2×</option>
+                <option value="820x1180">iPad Air — 1640 × 2360 @2×</option>
               </optgroup>
               <optgroup label="Android">
-                <option value="412x915">Pixel 8 / Galaxy S24 — 412 × 915</option>
-                <option value="360x780">Galaxy S24 — 360 × 780</option>
+                <option value="412x915">Pixel 8 / Galaxy S24 — 1080 × 2400</option>
+                <option value="360x780">Galaxy S24 — 1080 × 2340</option>
               </optgroup>
             </select>
           </div>
           <div class="tool-row dimensions-row">
-            <label>Dimensions</label>
-            <div id="badge-dimensions">-- x --</div>
+            <label>Viewport <span class="label-hint" title="CSS viewport pixels — the resolution your design code actually sees. Physical screen = viewport × DPR.">(CSS)</span></label>
+            <div id="badge-dimensions" title="CSS viewport pixels — what window.innerWidth/innerHeight returns">-- x --</div>
           </div>
         </div>
       </div>
@@ -154,10 +158,10 @@
           </label>
         </div>
         <div class="dim-preset-grid">
-          <button type="button" data-dim-size="393x852">iPhone 15 Pro · 393 × 852</button>
-          <button type="button" data-dim-size="430x932">iPhone 15 Pro Max · 430 × 932</button>
-          <button type="button" data-dim-size="834x1194">iPad Pro 11" · 834 × 1194</button>
-          <button type="button" data-dim-size="1024x1366">iPad Pro 13" · 1024 × 1366</button>
+          <button type="button" data-dim-size="393x852">iPhone 15 Pro · 1179 × 2556 @3×</button>
+          <button type="button" data-dim-size="430x932">iPhone 15 Pro Max · 1290 × 2796 @3×</button>
+          <button type="button" data-dim-size="834x1194">iPad Pro 11" · 1668 × 2388 @2×</button>
+          <button type="button" data-dim-size="1024x1366">iPad Pro 13" · 2048 × 2732 @2×</button>
           <button type="button" data-dim-size="1920x1080">Desktop FHD · 1920 × 1080</button>
           <button type="button" data-dim-size="2560x1440">Desktop QHD · 2560 × 1440</button>
         </div>

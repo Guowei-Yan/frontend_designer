@@ -15,6 +15,7 @@ const DOM = {
   btnPrev: document.getElementById('btn-prev'),
   btnNext: document.getElementById('btn-next'),
   btnRefresh: document.getElementById('btn-refresh'),
+  btnRotate: document.getElementById('btn-rotate'),
   btnCopyPath: document.getElementById('btn-copy-path'),
   alert: document.getElementById('dev-alert'),
   themeBtn: document.getElementById('btn-theme'),
@@ -317,6 +318,17 @@ class App {
     }
   }
 
+  rotateScreen() {
+    const dims = this.resizeEngine.getDimensions();
+    
+    // Swap width and height
+    this.resizeEngine.setDimensions(dims.height, dims.width);
+    
+    // Update ratio select to "free" since we're using custom dimensions now
+    DOM.ratioSelect.value = 'free';
+    this.queueStateSync();
+  }
+
   async copyCurrentPath() {
     const entry = this.manifest.getCurrentEntry();
     if (!entry) return;
@@ -380,6 +392,7 @@ class App {
     });
 
     DOM.btnRefresh.addEventListener('click', () => this.refreshFrame());
+    DOM.btnRotate.addEventListener('click', () => this.rotateScreen());
     DOM.btnCopyPath.addEventListener('click', () => this.copyCurrentPath());
 
     DOM.iframe.addEventListener('load', () => this.onFrameLoaded());
@@ -461,6 +474,9 @@ class App {
           break;
         case 'r':
           this.refreshFrame();
+          break;
+        case 'o':
+          this.rotateScreen();
           break;
         case 'd':
           DOM.themeBtn.click();
