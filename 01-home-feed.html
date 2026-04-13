@@ -2,249 +2,343 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <!-- 完美适配各种移动设备，包括刘海屏和底部安全区 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Plan-Local Ultimate Feed</title>
+  <title>Plan-Local: The Spatial Matrix (Flawless Edition)</title>
   <link rel="stylesheet" href="styles/feed.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app-shell">
+<div class="os-layout">
   
-  <!-- 左侧导航 (仅电脑端可见) -->
-  <aside class="sidebar-left">
-    <div class="brand-logo">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-      Plan-Local
+  <!-- ==========================================================================
+       左侧边栏：指挥中心 (仅在 >= 1024px 电脑端显示)
+       ========================================================================== -->
+  <aside class="os-sidebar-left">
+    <div class="brand-identity">
+      <h1 class="brand-logo">
+        <div class="brand-dot"></div>
+        PERTH.OS
+      </h1>
     </div>
+    
     <nav class="nav-menu">
-      <div class="nav-item active">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        首页发现
-      </div>
-      <div class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg>
-        消息通知
-      </div>
-      <div class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-        积分商城
-      </div>
-      <div class="nav-item">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        我的主页
-      </div>
+      <a class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+        全城矩阵
+      </a>
+      <a class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg>
+        信号收件箱
+      </a>
+      <a class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        土地交易所
+      </a>
+      <a class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        节点档案
+      </a>
     </nav>
-    <button class="btn-post-desktop">发布动态</button>
   </aside>
 
-  <!-- 中间核心信息流 -->
-  <main class="feed-column">
+  <!-- ==========================================================================
+       核心区域：流体矩阵网格 (The Fluid Bento Grid)
+       绝对移动优先。在手机上强制单列，在 iPad 上完美双列。绝不溢出。
+       ========================================================================== -->
+  <main class="os-feed">
     
-    <!-- 移动端顶部 (仅手机端可见) -->
+    <!-- 移动端专属毛玻璃头部 (仅在 < 1024px 显示) -->
     <header class="mobile-header">
-      <div class="mobile-top-bar">
-        <div class="mobile-location">
-          珀斯本地生活
-        </div>
-        <div class="majia-avatar" title="马甲切换">主</div>
-      </div>
-      <div class="category-tabs">
-        <div class="tab-pill active">全部</div>
-        <div class="tab-pill">求助</div>
-        <div class="tab-pill">推荐</div>
-        <div class="tab-pill">活动</div>
-        <div class="tab-pill">闲聊</div>
+      <h1 class="mobile-title">PERTH.OS</h1>
+      <div class="filter-pills">
+        <div class="pill active">所有信号</div>
+        <div class="pill">急需援助</div>
+        <div class="pill">本地情报</div>
+        <div class="pill">周末活动</div>
       </div>
     </header>
 
-    <!-- 1. 中农：标准图文帖 -->
-    <article class="post-card">
-      <div class="post-header">
-        <div class="user-profile">
-          <div class="avatar-wrapper">
-            <div class="avatar-img"></div>
-            <div class="level-badge middle"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M20 6L9 17l-5-5"></path></svg></div>
-          </div>
-          <div class="user-meta">
-            <span class="user-name">Perth百事通</span>
-            <span class="post-time">10 分钟前</span>
-          </div>
-        </div>
-      </div>
-      <div class="post-body">
-        <span class="tag-inline">探店推荐</span>
-        周末去 City 逛了一圈，发现北桥新开了一家面馆，味道居然出奇的不错。牛肉炖得很烂，汤底有明显的药膳香气。
-      </div>
-      <div class="bento-grid" data-count="3">
-        <div class="bento-item"></div>
-        <div class="bento-item"></div>
-        <div class="bento-item"></div>
-      </div>
-      <div class="post-actions">
-        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> 12</button>
-        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg> 5</button>
-      </div>
-    </article>
+    <div class="bento-grid">
 
-    <!-- 2. 地主：求助工单帖 -->
-    <article class="post-card type-help">
-      <div class="help-status-bar open">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        急需帮助
-      </div>
-      <div class="post-header">
-        <div class="user-profile">
-          <div class="avatar-wrapper level-landlord">
-            <div class="avatar-img"></div>
-            <div class="level-badge landlord"><svg width="12" height="12" viewBox="0 0 24 24" fill="#D97706"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+      <!-- 
+        节点 0：内联影子账本 (Inline Shadow Ledger)
+        尺寸：2x1 (宽幅区块)
+        彻底取代悬浮窗。它作为一个实体区块嵌入在信息流顶部，随页面滚动，绝不遮挡！
+      -->
+      <article class="block size-2x1 sys-ledger">
+        <div class="block-content">
+          <div class="block-header">
+            <span class="time-stamp" style="color: rgba(255,255,255,0.6);">SYSTEM.OVERRIDE</span>
           </div>
-          <div class="user-meta">
-            <span class="user-name">老王修水电</span>
-            <span class="post-time">2 小时前</span>
+          <div class="text-content" style="margin-top: 0;">
+            <h2 class="block-title">游客节点已激活</h2>
+            <p class="block-excerpt">您当前以 0.1x 权重浏览。系统已为您拦截并储存了交互产生的土地积分。</p>
+            <div class="ledger-points">
+              +1.40 PTS
+            </div>
+            <button class="btn-ledger-claim">
+              认领身份并入账
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
           </div>
         </div>
-      </div>
-      <div class="post-body" style="font-size: 18px; font-weight: 500;">
-        Canning Vale 附近有没有靠谱的通下水道师傅？厨房水槽完全堵死了，试了超市买的药水没用，积水已经漫出来了。
-      </div>
-      <div class="post-actions">
-        <button class="action-btn"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg> 45 条建议</button>
-      </div>
-    </article>
+      </article>
 
-    <!-- 3. 富农：AI 预审中 -->
-    <article class="post-card">
-      <div class="post-header">
-        <div class="user-profile">
-          <div class="avatar-wrapper">
-            <div class="avatar-img"></div>
-            <div class="level-badge wealthy"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+      <!-- 
+        节点 1：地主阶层 (The Landlord)
+        尺寸：2x2 (手机上自动降级为 1 列，iPad 恢复 2 列)
+      -->
+      <article class="block size-2x2 has-image tier-landlord">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80" alt="Restaurant" class="block-bg-media">
+        <div class="block-content">
+          <div class="block-header">
+            <div class="author-id">
+              <div class="micro-avatar">
+                <img src="https://i.pravatar.cc/100?img=11" alt="Avatar">
+              </div>
+              <span class="author-name">Perth美食雷达</span>
+            </div>
+            <div class="tier-indicator landlord" title="地主阶层"></div>
           </div>
-          <div class="user-meta">
-            <span class="user-name">匿名用户_89X</span>
-            <span class="post-time">
-              刚刚 发布
-              <span class="golden-edit-tag">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                04:59 可编辑
-              </span>
-            </span>
+          
+          <div class="text-content">
+            <h2 class="block-title">北桥新开的这家兰州牛肉面，汤头绝了。</h2>
+            <p class="block-excerpt">周末去 City 逛了一圈，发现北桥新开了一家面馆。牛肉炖得很烂，汤底有明显的药膳香气，辣子也是正宗的西北味。强烈建议大家去试试，就在图书馆旁边的那条街上。</p>
+          </div>
+          
+          <div class="block-actions" style="border-color: rgba(255,255,255,0.2);">
+            <span class="time-stamp">12 分钟前</span>
+            <button class="btn-action" style="margin-left: auto;">
+              <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+              4.2K
+            </button>
+            <button class="btn-action">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg>
+              128
+            </button>
           </div>
         </div>
-      </div>
-      <div class="post-body ai-skeleton-mask">
-        大家推荐一下好用的本地二手车检测服务吧？之前看中了一辆车，但是怕有暗病不敢下手。
-      </div>
-      <div class="ai-status-text">
-        <div class="ai-pulse"></div>
-        内容安全护航中，当前仅自己可见
-      </div>
-    </article>
+      </article>
 
-    <!-- 4. Scheme Y 降级态 -->
-    <article class="post-card">
-      <div class="scheme-y-banner">
-        <svg class="scheme-y-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-        <div class="scheme-y-content">
-          <span class="scheme-y-title">极速发布模式已激活</span>
-          <span class="scheme-y-desc">当前网络拥挤，内容已通过本地安全校验上线，稍后将完成最终智能审核。</span>
-        </div>
-      </div>
-      <div class="post-header">
-        <div class="user-profile">
-          <div class="avatar-wrapper">
-            <div class="avatar-img"></div>
-            <div class="level-badge middle"><svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M20 6L9 17l-5-5"></path></svg></div>
+      <!-- 
+        节点 2：求助信号弹 (The Flare Node)
+        尺寸：2x1 (宽幅区块)
+      -->
+      <article class="block size-2x1 type-flare">
+        <div class="block-content">
+          <div class="block-header">
+            <div class="flare-badge">
+              <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              紧急求助信号
+            </div>
+            <span class="time-stamp">2 小时前</span>
           </div>
-          <div class="user-meta">
-            <span class="user-name">夜猫子</span>
-            <span class="post-time">1 分钟前</span>
+          
+          <div class="text-content">
+            <h2 class="block-title">急！Canning Vale 附近有没有靠谱的通下水道师傅？</h2>
+            <p class="block-excerpt">厨房水槽完全堵死了，试了超市买的药水没用，积水已经漫出来了。在线等，挺急的！</p>
           </div>
+          
+          <button class="btn-solve">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            提供解决方案 (已有 4 条线索)
+          </button>
         </div>
-      </div>
-      <div class="post-body">
-        半夜睡不着，有人在玩黑神话悟空吗？卡在小黄龙了，求指点。
-      </div>
-    </article>
+      </article>
 
-    <!-- 全新：信息流内嵌游客转化卡片 (Inline Promo Card) -->
-    <!-- 这个卡片只对未登录的游客显示，优雅地打断信息流，引导注册 -->
-    <div class="feed-promo-card">
-      <div class="promo-content">
-        <div class="promo-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          解锁完整本地生活
+      <!-- 
+        节点 3：AI 深度扫描中 (Tier-1 Async)
+        尺寸：1x2 (竖幅区块) - 骨架屏脉冲效果
+      -->
+      <article class="block size-1x2 state-scanning">
+        <div class="block-content">
+          <div class="block-header">
+            <div class="author-id">
+              <div class="micro-avatar">匿</div>
+              <span class="author-name">匿名_89X</span>
+            </div>
+          </div>
+          
+          <div class="text-content">
+            <h2 class="block-title" style="color: transparent; text-shadow: 0 0 8px var(--color-text-muted);">二手车检测服务推荐？</h2>
+            <div style="margin-top: 16px;">
+              <div class="ai-pulse-bar"></div>
+              <div class="ai-pulse-bar"></div>
+              <div class="ai-pulse-bar"></div>
+            </div>
+          </div>
+          
+          <div class="ai-status-bar">
+            <div class="ai-spinner"></div>
+            TIER-1 深度安全扫描中
+          </div>
         </div>
-        <div class="promo-desc">
-          您当前为游客状态，互动权重受限 (0.1x)。注册成为正式居民，即可发布求助、参与讨论并积累土地积分。
+      </article>
+
+      <!-- 
+        节点 4：黄金 5 分钟可编辑期 (Flux State)
+        尺寸：1x1 (标准区块)
+      -->
+      <article class="block size-1x1 state-flux tier-wealthy">
+        <div class="block-content">
+          <div class="block-header">
+            <div class="flux-timer">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              04:21
+            </div>
+            <div class="tier-indicator wealthy"></div>
+          </div>
+          
+          <div class="text-content">
+            <h2 class="block-title">毕业回国，家具打包</h2>
+            <p class="block-excerpt">九成新宜家书桌、微波炉。Crawley 自提优先。</p>
+          </div>
         </div>
-      </div>
-      <button class="btn-promo">立即注册</button>
+      </article>
+
+      <!-- 
+        节点 5：Scheme Y 降级态 (Lo-Fi 警告模式)
+        尺寸：1x1 (标准区块)
+      -->
+      <article class="block size-1x1 state-scheme-y tier-middle">
+        <div class="block-content">
+          <div class="block-header">
+            <span class="sys-tag">极速发布 (未校验)</span>
+            <div class="tier-indicator middle"></div>
+          </div>
+          
+          <div class="text-content">
+            <h2 class="block-title">黑神话悟空卡关了</h2>
+            <p class="block-excerpt">半夜睡不着，卡在小黄龙了，求路过的天命人指点。</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 
+        节点 6：中农阶层 (The Middle Tier) + 内联双图画廊
+        尺寸：2x1 (宽幅区块)
+      -->
+      <article class="block size-2x1 tier-middle">
+        <div class="block-content" style="flex-direction: row; gap: 24px;">
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <div class="block-header">
+              <div class="author-id">
+                <div class="micro-avatar">L</div>
+                <span class="author-name">Local_Guide</span>
+              </div>
+            </div>
+            <div class="text-content">
+              <h2 class="block-title">周末 Fremantle 集市打卡</h2>
+              <p class="block-excerpt">天气真好，集市里新开了几家手工艺品摊位，很适合周末散心。买了一杯拉花非常棒的拿铁。</p>
+            </div>
+            <span class="time-stamp" style="margin-top: auto;">刚刚发布</span>
+          </div>
+          
+          <div class="inner-gallery" data-layout="duo" style="flex: 1; margin-top: 0;">
+            <img src="https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=400&q=80" alt="Market">
+            <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=400&q=80" alt="Coffee">
+          </div>
+        </div>
+      </article>
+
+      <!-- 
+        节点 7：贫农/匿名游客 (The Peasant/Transient)
+        尺寸：1x1 (标准区块)
+      -->
+      <article class="block size-1x1 tier-peasant">
+        <div class="block-content">
+          <div class="block-header">
+            <div class="micro-avatar" style="border-radius: 50%;">?</div>
+          </div>
+          <div class="text-content" style="margin-top: auto;">
+            <p class="block-excerpt">路过点个赞。这个设计界面真的很有意思，不像普通的论坛，排版太舒服了。</p>
+          </div>
+        </div>
+      </article>
+
     </div>
-
   </main>
 
-  <!-- 右侧语境栏 (仅电脑端可见) -->
-  <aside class="sidebar-right">
-    <div class="widget-card">
-      <div class="widget-title">珀斯本地热搜</div>
-      <div class="trending-list">
-        <div class="trending-item">
-          <span class="trending-tag">生活互助</span>
-          <span class="trending-title">南区哪家华人超市菜最新鲜？</span>
-        </div>
-        <div class="trending-item">
-          <span class="trending-tag">二手交易</span>
-          <span class="trending-title">毕业回国，全套家具打包出</span>
-        </div>
-        <div class="trending-item">
-          <span class="trending-tag">周末活动</span>
-          <span class="trending-title">Fremantle 周末集市打卡攻略</span>
-        </div>
-      </div>
-    </div>
+  <!-- ==========================================================================
+       右侧边栏：语境数据板 (仅在 >= 1280px 大屏电脑端显示)
+       ========================================================================== -->
+  <aside class="os-sidebar-right">
     
-    <div class="widget-card">
-      <div class="widget-title">社区地主榜</div>
-      <div class="trending-list">
-        <div class="user-profile">
-          <div class="avatar-wrapper level-landlord" style="width: 32px; height: 32px;">
-            <div class="avatar-img"></div>
-          </div>
-          <span class="user-name" style="font-size: 14px;">老王修水电</span>
+    <div class="context-widget">
+      <div class="widget-header">
+        <span>本地高频情报</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </div>
+      <div class="trend-list">
+        <div class="trend-item">
+          <span class="trend-title">南区哪家华人超市菜最新鲜？</span>
+          <span class="trend-meta">2.4K 次关注</span>
         </div>
-        <div class="user-profile">
-          <div class="avatar-wrapper level-landlord" style="width: 32px; height: 32px;">
-            <div class="avatar-img"></div>
-          </div>
-          <span class="user-name" style="font-size: 14px;">珀斯百事通</span>
+        <div class="trend-item">
+          <span class="trend-title">UWA 附近租房避雷指南</span>
+          <span class="trend-meta">1.8K 次关注</span>
+        </div>
+        <div class="trend-item">
+          <span class="trend-title">近期回国机票跳水预警</span>
+          <span class="trend-meta">890 次关注</span>
         </div>
       </div>
     </div>
+
+    <div class="context-widget">
+      <div class="widget-header">
+        <span>社区地主节点排行榜</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </div>
+      <div class="trend-list">
+        <div class="trend-item" style="flex-direction: row; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="micro-avatar" style="border-radius: 50%; box-shadow: 0 0 0 2px var(--tier-landlord-accent);">王</div>
+            <span class="trend-title">老王修水电</span>
+          </div>
+          <span class="trend-meta" style="color: var(--tier-landlord-accent); font-weight: 700;">8.4K 积分</span>
+        </div>
+        <div class="trend-item" style="flex-direction: row; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="micro-avatar" style="border-radius: 50%; box-shadow: 0 0 0 2px var(--tier-landlord-accent);">P</div>
+            <span class="trend-title">Perth百事通</span>
+          </div>
+          <span class="trend-meta" style="color: var(--tier-landlord-accent); font-weight: 700;">7.2K 积分</span>
+        </div>
+      </div>
+    </div>
+
   </aside>
 
 </div>
 
-<!-- 移动端底部 Tab Bar -->
+<!-- ==========================================================================
+     实体底部导航栏 (SOLID BOTTOM TAB BAR)
+     修复：彻底取代悬浮的灵动岛。它占据物理空间，乖乖待在底部，绝不遮挡任何内容。
+     ========================================================================== -->
 <nav class="mobile-tab-bar">
-  <div class="tab-item active">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-    <span class="tab-label">首页</span>
+  <div class="tab-pill active">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+    <span class="tab-label">矩阵</span>
   </div>
-  <div class="tab-item">
+  <div class="tab-pill">
     <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"></path></svg>
-    <span class="tab-label">消息</span>
+    <span class="tab-label">信号</span>
   </div>
-  <div class="tab-item post-btn">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"></circle><line x1="12" y1="8" x2="12" y2="16" stroke="white" stroke-width="2"></line><line x1="8" y1="12" x2="16" y2="12" stroke="white" stroke-width="2"></line></svg>
+  <div class="tab-pill primary">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
   </div>
-  <div class="tab-item">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-    <span class="tab-label">商城</span>
+  <div class="tab-pill">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+    <span class="tab-label">交易所</span>
   </div>
-  <div class="tab-item">
+  <div class="tab-pill">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-    <span class="tab-label">我的</span>
+    <span class="tab-label">档案</span>
   </div>
 </nav>
 
