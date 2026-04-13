@@ -17,6 +17,8 @@ const DOM = {
   btnRefresh: document.getElementById('btn-refresh'),
   btnRotate: document.getElementById('btn-rotate'),
   btnCopyPath: document.getElementById('btn-copy-path'),
+  btnToggleTools: document.getElementById('btn-toggle-tools'),
+  cmdTools: document.getElementById('cmd-tools'),
   alert: document.getElementById('dev-alert'),
   themeBtn: document.getElementById('btn-theme'),
   mockWrapper: document.getElementById('mock-screen-wrapper'),
@@ -394,6 +396,15 @@ class App {
     DOM.btnRefresh.addEventListener('click', () => this.refreshFrame());
     DOM.btnRotate.addEventListener('click', () => this.rotateScreen());
     DOM.btnCopyPath.addEventListener('click', () => this.copyCurrentPath());
+    
+    if (DOM.btnToggleTools && DOM.cmdTools) {
+      DOM.btnToggleTools.addEventListener('click', () => {
+        DOM.cmdTools.classList.toggle('visible');
+        DOM.btnToggleTools.classList.toggle('active');
+        // Add a slight delay then rescale just in case the menu height changed
+        setTimeout(() => this.scaler.rescale(), 100);
+      });
+    }
 
     DOM.iframe.addEventListener('load', () => this.onFrameLoaded());
     DOM.iframe.addEventListener('pointerdown', () => this.setFrameFocus(true));

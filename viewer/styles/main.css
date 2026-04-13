@@ -496,7 +496,15 @@ select:focus {
     background: var(--color-accent-hover);
 }
 
+.mobile-only {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
+    .mobile-only {
+        display: flex !important;
+    }
+    
     #app {
         flex-direction: column-reverse;
     }
@@ -530,12 +538,23 @@ select:focus {
     }
     
     .cmd-tools {
-        display: flex;
+        display: none; /* hidden by default on mobile */
         flex-direction: row;
         align-items: center;
         gap: 8px;
         width: 100%;
         margin-top: 4px;
+        padding-bottom: 4px;
+    }
+    
+    .cmd-tools.visible {
+        display: flex;
+    }
+    
+    .action-btn.active {
+        background: var(--color-surface-hover);
+        border-color: var(--color-accent);
+        color: var(--color-accent);
     }
     
     .tool-row.dimensions-row {
@@ -584,6 +603,13 @@ select:focus {
         justify-content: center;
     }
 
+    .action-btn {
+        padding: 10px;
+        border-radius: 10px;
+        min-width: 44px;
+        justify-content: center;
+    }
+    
     .cmd-actions .action-btn span {
         display: none;
     }
