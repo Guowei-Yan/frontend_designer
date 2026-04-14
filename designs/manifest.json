@@ -1,0 +1,8 @@
+[
+  {
+    "index": 1,
+    "title": "Feed",
+    "description": "主 Feed 页面。含求助(呼吸色晕)/推荐(单图)/活动(官方置顶)/闲聊(拔河投票)/已解决/审核中 八种帖子状态。响应式：>1024px 双栏含侧边栏，<640px 移动端底栏。主题跟随 design-view 切换。",
+    "filePath": "feed.html"
+  }
+]

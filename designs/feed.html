@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feed — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    /* ── 页面布局 ──────────────────────────────────────────── */
+
+    .page-layout {
+      display:     grid;
+      gap:         48px;
+      max-width:   1040px;
+      margin:      var(--topbar-height) auto 0;
+      padding:     0 40px;
+      align-items: start;
+      grid-template-columns: minmax(0, 640px) 240px;
+    }
+
+    .feed-main {
+      min-width: 0;
+    }
+
+    .feed-sidebar {
+      padding-top: 40px;
+      position:    sticky;
+      top:         calc(var(--topbar-height) + 16px);
+      max-height:  calc(100vh - var(--topbar-height) - 32px);
+      overflow-y:  auto;
+    }
+
+    .feed-sidebar::-webkit-scrollbar { display: none; }
+    .feed-sidebar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ── 平板断点：单列，隐藏侧边栏 ───────────────────────── */
+
+    @media (max-width: 1023px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+        max-width: 640px;
+        padding:   0 20px;
+        gap:       0;
+      }
+
+      .feed-sidebar {
+        display: none;
+      }
+    }
+
+    /* ── 移动端断点 ─────────────────────────────────────────── */
+
+    @media (max-width: 639px) {
+      .page-layout {
+        max-width:      100%;
+        padding:        0;
+        padding-bottom: 72px;
+      }
+    }
+
+    /* ── 暗色模式 excerpt fade 修正 ────────────────────────── */
+
+    [data-theme="dark"] .post-item:hover .post-excerpt-fade::after {
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        #1A1816     90%
+      );
+    }
+
+    /* ── 暗色侧边栏左边线 ──────────────────────────────────── */
+
+    [data-theme="dark"] .feed-sidebar {
+      padding-left: 20px;
+      border-left:  1px solid var(--divider);
+    }
+
+    /* ── 暗色细节修正 ──────────────────────────────────────── */
+
+    [data-theme="dark"] .breathing-battle {
+      background:   rgba(204, 170, 92, 0.09);
+      border-color: rgba(204, 170, 92, 0.25);
+    }
+
+    [data-theme="dark"] .tag-pill {
+      background: rgba(196, 173, 143, 0.08);
+    }
+
+    [data-theme="dark"] .tag-pill:hover {
+      background: rgba(196, 173, 143, 0.15);
+    }
+
+    [data-theme="dark"] .official-badge {
+      background: rgba(196, 173, 143, 0.12);
+    }
+
+    [data-theme="dark"] .sidebar-hot-badge {
+      background: rgba(204, 170, 92, 0.14);
+    }
+
+    /* ── 审核中状态帖子 ────────────────────────────────────── */
+
+    .post-item.post-pending {
+      opacity: 0.70;
+    }
+
+    .status-tag {
+      display:     inline-flex;
+      align-items: center;
+      gap:         4px;
+      font-size:   12px;
+      color:       var(--text-muted);
+      line-height: 1;
+    }
+
+    /* ── 拔河投票特有样式 ──────────────────────────────────── */
+
+    .tow-rope-light { display: block; }
+    .tow-rope-dark  { display: none;  }
+
+    [data-theme="dark"] .tow-rope-light { display: none;  }
+    [data-theme="dark"] .tow-rope-dark  { display: block; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       TOPBAR
+  ══════════════════════════════════════════════════════════ -->
+  <header class="topbar">
+
+    <div class="topbar-brand">
+      <div class="brand-stamp">P</div>
+      <span class="brand-city">Perth</span>
+    </div>
+
+    <div class="topbar-actions">
+
+      <button class="topbar-btn topbar-search" title="搜索">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.5" y1="16.5" x2="22" y2="22" />
+        </svg>
+      </button>
+
+      <div class="topbar-user">
+        <div class="avatar av-28 av-wealthy">
+          <div class="avatar-img" style="
+            background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+          "></div>
+        </div>
+        <svg class="topbar-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       PAGE LAYOUT
+  ══════════════════════════════════════════════════════════ -->
+  <div class="page-layout">
+
+
+    <!-- ── FEED MAIN ──────────────────────────────────────────── -->
+    <main class="feed-main">
+
+      <!-- 呼吸区 -->
+      <div class="breathing-zone">
+        <div class="breathing-city">Perth · 今天 8 条新动态</div>
+        <div class="breathing-summary">近期求助最多的是水管问题，已有 3 人找到了帮手</div>
+        <div class="breathing-battle">
+          🔥 &ldquo;最好吃的早午餐&rdquo; 投票激战中 &mdash; Sayer&rsquo;s 反超了！
+        </div>
+      </div>
+
+
+      <!-- ── Post 1 · 求助 · 富农 · 未解决 · 呼吸色晕 ──────── -->
+      <article class="post-item" data-category="help" data-solved="false">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28 av-wealthy">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">老王</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">富农</span>
+            </div>
+            <span class="post-time">23 分钟前</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">厨房下水堵了三天了，求推荐靠谱的管道工</h3>
+            <div class="post-excerpt-fade">
+              试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！有没有之前找过师傅的朋友能推荐一下？
+            </div>
+          </div>
+
+          <div class="post-meta-row">
+            <span class="category-mark cm-help">求助</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                12
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                5
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 2 · 推荐 · 中农 · 单图 ───────────────────── -->
+      <article class="post-item" data-category="recommend">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28 av-middle">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #9CBFAA 0%, #6A9A7A 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">小李</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">中农</span>
+            </div>
+            <span class="post-time">1 小时前</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">Northbridge 这家越南粉真的绝了，每周去两次那种</h3>
+            <div class="post-excerpt-fade">
+              藏在一条小巷子里，要不是朋友带路根本找不到。汤底是真材实料熬的，不是那种勾芡糊弄人的，牛肉河粉大份才 $16，分量良心。
+            </div>
+          </div>
+
+          <div class="media-wrap">
+            <div class="media-single" style="
+              background: linear-gradient(160deg,
+                #C4884A 0%,
+                #A86030 35%,
+                #8A4820 60%,
+                #C89060 80%,
+                #E8C090 100%
+              );
+            "></div>
+          </div>
+
+          <div class="post-meta-row">
+            <span class="category-mark cm-recommend">推荐</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                5
+              </span>
+              <span class="interaction-item liked">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                18
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 3 · 活动 · 官方 · 置顶 ───────────────────── -->
+      <article class="post-item" data-category="event">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="pinned-row">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="12" y1="17" x2="12" y2="22" />
+              <path d="M5 17H19V15L17 8V4H7V8L5 15V17Z" />
+            </svg>
+            置顶公告
+          </div>
+
+          <div class="post-author-row">
+            <div class="avatar av-28">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #9A8878 0%, #7A6858 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">社区小助手</span>
+              <span class="official-badge">官方</span>
+            </div>
+            <span class="post-time">今天 09:00</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">📅 本周六 Subiaco 市集：手工艺 · 二手书 · 本地农产品</h3>
+            <div class="post-excerpt-fade">
+              每月第一个周六早上 7:00&ndash;13:00，Rokeby Road 路边。今年新加了宠物交流区，欢迎带毛孩子来逛逛，还有现场手冲咖啡和本地蜂蜜试吃。
+            </div>
+          </div>
+
+          <div class="post-meta-row">
+            <span class="category-mark cm-event">活动</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                3
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                27
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 4 · 闲聊 · 中农 · 拔河投票 ──────────────── -->
+      <article class="post-item" data-category="chat">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28 av-middle">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #D4AA70 0%, #B8893A 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">吃货联盟</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">中农</span>
+            </div>
+            <span class="post-time">3 小时前</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">投票：Perth 最好吃的早午餐在哪里？</h3>
+          </div>
+
+          <!-- 拔河组件 -->
+          <div class="poll-tow">
+
+            <div class="tow-header">
+
+              <div class="tow-side-head">
+                <div class="tow-avatars">
+                  <div class="tow-av tow-av-me" style="background: linear-gradient(135deg, #E8B090, #C07B50);"></div>
+                  <div class="tow-av" style="background: linear-gradient(135deg, #D4AA70, #B8893A);"></div>
+                  <div class="tow-av" style="background: linear-gradient(135deg, #9CBFAA, #6A9A7A);"></div>
+                  <div class="tow-av" style="background: linear-gradient(135deg, #C4A8D8, #9878B8);"></div>
+                  <div class="tow-av-more">+40</div>
+                </div>
+                <div>
+                  <div class="tow-label-name">Sayer&rsquo;s Sister</div>
+                  <div class="tow-label-count">44 人</div>
+                </div>
+              </div>
+
+              <div class="tow-side-head tow-side-head-right">
+                <div class="tow-avatars" style="flex-direction: row-reverse;">
+                  <div class="tow-av tow-av-right" style="background: linear-gradient(135deg, #B8B0A8, #8A8480);"></div>
+                  <div class="tow-av tow-av-right" style="background: linear-gradient(135deg, #A8C4D8, #7898B8);"></div>
+                  <div class="tow-av tow-av-right" style="background: linear-gradient(135deg, #C8B098, #A07858);"></div>
+                  <div class="tow-av-more">+35</div>
+                </div>
+                <div style="text-align: right;">
+                  <div class="tow-label-name">Lulu La Delizia</div>
+                  <div class="tow-label-count">38 人</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- 亮色绳 -->
+            <div class="tow-rope-wrap tow-rope-light">
+              <svg viewBox="0 0 400 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="rope-light" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0%"   stop-color="#C75B3A" />
+                    <stop offset="54%"  stop-color="#C75B3A" />
+                    <stop offset="54%"  stop-color="#B8893A" />
+                    <stop offset="100%" stop-color="#B8893A" />
+                  </linearGradient>
+                </defs>
+                <path d="M 0,10 Q 100,22 200,16 Q 300,10 400,14"
+                      fill="none"
+                      stroke="url(#rope-light)"
+                      stroke-width="4"
+                      stroke-linecap="round" />
+                <circle cx="216" cy="15.2" r="7"
+                        fill="#FFFFFF"
+                        stroke="#6B6460"
+                        stroke-width="2" />
+              </svg>
+            </div>
+
+            <!-- 暗色绳 -->
+            <div class="tow-rope-wrap tow-rope-dark">
+              <svg viewBox="0 0 400 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="rope-dark" x1="0" x2="1" y1="0" y2="0">
+                    <stop offset="0%"   stop-color="#D4724F" />
+                    <stop offset="54%"  stop-color="#D4724F" />
+                    <stop offset="54%"  stop-color="#CCAA5C" />
+                    <stop offset="100%" stop-color="#CCAA5C" />
+                  </linearGradient>
+                </defs>
+                <path d="M 0,10 Q 100,22 200,16 Q 300,10 400,14"
+                      fill="none"
+                      stroke="url(#rope-dark)"
+                      stroke-width="4"
+                      stroke-linecap="round" />
+                <circle cx="216" cy="15.2" r="7"
+                        fill="#232019"
+                        stroke="#9C958C"
+                        stroke-width="2" />
+              </svg>
+            </div>
+
+          </div>
+
+          <div class="post-meta-row">
+            <div class="post-meta-secondary">
+              <span class="category-mark cm-chat">闲聊</span>
+              <span class="vote-count-note">82 人参与</span>
+            </div>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                89
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                156
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 5 · 闲聊 · 贫农 · 纯文字 ────────────────── -->
+      <article class="post-item" data-category="chat">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #BEB8B0 0%, #908A84 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">阿珍</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">贫农</span>
+            </div>
+            <span class="post-time">4 小时前</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">邻居的猫又翻了我的垃圾桶，已经第三次了</h3>
+            <div class="post-excerpt-fade">
+              每次出门都要检查一遍地上有没有垃圾，实在受不了了。有没有什么友好驱猫的方法，不想伤害它但是也不想每天清理满地狼藉。
+            </div>
+          </div>
+
+          <div class="post-meta-row">
+            <span class="category-mark cm-chat">闲聊</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                7
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                3
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 6 · 推荐 · 地主 · 4 图 ───────────────────── -->
+      <article class="post-item" data-category="recommend">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28 av-landlord">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #DDB870 0%, #C09040 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">老张</span>
+              <span class="author-sep">·</span>
+              <span class="author-level landlord">地主</span>
+            </div>
+            <span class="post-time">昨天 15:30</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">Kings Park 的野花开了！强烈推荐这周末去走走</h3>
+            <div class="post-excerpt-fade">
+              每年这个时候是最美的，整片山头都是紫色和金黄色的野花，带相机去绝对不会失望，建议早上九点前到避开人流。
+            </div>
+          </div>
+
+          <div class="media-wrap">
+            <div class="media-2x2">
+
+              <div class="media-cell" style="
+                background: linear-gradient(160deg,
+                  #7BC0E8 0%, #7BC0E8 45%,
+                  #70A060 45%, #90B870 100%
+                );
+              "></div>
+
+              <div class="media-cell" style="
+                background: linear-gradient(150deg,
+                  #D0A0E0 0%, #B880D0 40%,
+                  #A8C880 70%, #88A860 100%
+                );
+              "></div>
+
+              <div class="media-cell" style="
+                background: linear-gradient(170deg,
+                  #90B870 0%, #B8D890 30%,
+                  #E8D080 60%, #D0A840 100%
+                );
+              "></div>
+
+              <div class="media-cell" style="
+                background: linear-gradient(140deg,
+                  #80A068 0%, #A8C888 40%,
+                  #C8A0D8 70%, #A870C0 100%
+                );
+              ">
+                <div class="media-cell-overlay">+12</div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="post-meta-row">
+            <span class="category-mark cm-recommend">推荐</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                21
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                44
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 7 · 求助 · 贫农 · 审核中（作者视角）──────── -->
+      <article class="post-item post-pending" data-category="help" data-solved="false">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #BEB8B0 0%, #908A84 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">阿珍</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">贫农</span>
+            </div>
+            <span class="post-time">刚刚</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">有人知道 Joondalup 附近哪里可以修锁吗？</h3>
+            <div class="post-excerpt-fade">
+              钥匙断在锁里了，现在出不了门，急需帮助。
+            </div>
+          </div>
+
+          <div class="post-meta-row">
+            <div class="post-meta-secondary">
+              <span class="category-mark cm-help">求助</span>
+              <span class="status-tag">⏳ 安全检查中</span>
+            </div>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                0
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                0
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- ── Post 8 · 求助 · 中农 · 已解决 ────────────────── -->
+      <article class="post-item" data-category="help" data-solved="true">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+
+          <div class="post-author-row">
+            <div class="avatar av-28 av-middle">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #9CBFAA 0%, #6A9A7A 100%);
+              "></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">小李</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">中农</span>
+            </div>
+            <span class="post-time">昨天 11:20</span>
+          </div>
+
+          <div class="post-body">
+            <h3 class="post-title">热水器坏了三天，终于找到靠谱师傅修好了</h3>
+            <div class="post-excerpt-fade">
+              之前在这里发了帖子求推荐，好几个邻居都提到了同一个师傅，昨天上门看了一下，当天就修好了，价格合理，分享一下联系方式。
+            </div>
+          </div>
+
+          <div class="post-meta-row">
+            <div class="post-meta-secondary">
+              <span class="category-mark cm-help">求助</span>
+              <span class="status-tag" style="color: var(--success);">✅ 已解决</span>
+            </div>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                34
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+                61
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <div class="load-more">· · ·</div>
+    </main>
+
+
+    <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+    <aside class="feed-sidebar">
+
+      <div class="sidebar-section">
+        <div class="sidebar-city-header">
+          <div class="sidebar-city-stamp">P</div>
+          <div>
+            <div class="sidebar-city-name">Perth 社区</div>
+            <div class="sidebar-city-since">自 2024 年 3 月建立</div>
+          </div>
+        </div>
+        <div class="sidebar-stat-grid">
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value val-active">8</span>
+            <span class="sidebar-stat-label">今日新帖</span>
+          </div>
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value">156</span>
+            <span class="sidebar-stat-label">活跃用户</span>
+          </div>
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value">312</span>
+            <span class="sidebar-stat-label">本月发帖</span>
+          </div>
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value val-success">3</span>
+            <span class="sidebar-stat-label">已解决</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">热门话题</div>
+        <div class="tag-cloud">
+          <button class="tag-pill">#水管维修</button>
+          <button class="tag-pill">#早午餐推荐</button>
+          <button class="tag-pill">#Kings Park</button>
+          <button class="tag-pill">#遛狗</button>
+          <button class="tag-pill">#搬家</button>
+          <button class="tag-pill">#电工</button>
+          <button class="tag-pill">#二手市集</button>
+          <button class="tag-pill">#宠物</button>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">活跃邻居</div>
+
+        <div class="sidebar-user-row">
+          <div class="avatar av-28 av-landlord">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #DDB870, #C09040);
+            "></div>
+          </div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">
+              老张
+              <span class="sidebar-hot-badge">🔥 本月最活跃</span>
+            </div>
+            <div class="sidebar-user-meta">地主 · 发帖 48 篇</div>
+          </div>
+        </div>
+
+        <div class="sidebar-user-row">
+          <div class="avatar av-28 av-middle">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #9CBFAA, #6A9A7A);
+            "></div>
+          </div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">小李</div>
+            <div class="sidebar-user-meta">中农 · 发帖 23 篇</div>
+          </div>
+          <span class="sidebar-user-stat">回复 89</span>
+        </div>
+
+        <div class="sidebar-user-row">
+          <div class="avatar av-28 av-middle">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #D4AA70, #B8893A);
+            "></div>
+          </div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">吃货联盟</div>
+            <div class="sidebar-user-meta">中农 · 发帖 19 篇</div>
+          </div>
+          <span class="sidebar-user-stat">回复 56</span>
+        </div>
+
+      </div>
+
+    </aside>
+
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       FAB (桌面端)
+  ══════════════════════════════════════════════════════════ -->
+  <button class="fab" title="写点什么">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5"  y1="12" x2="19" y2="12" />
+    </svg>
+    写点什么
+  </button>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       BOTTOM NAV (移动端)
+  ══════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav" aria-label="主导航">
+    <div class="bnav-items">
+
+      <button class="bnav-item bnav-active" aria-label="首页">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        首页
+      </button>
+
+      <button class="bnav-item" aria-label="搜索">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        搜索
+      </button>
+
+      <button class="bnav-item" aria-label="发帖">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+        发帖
+      </button>
+
+      <button class="bnav-item" aria-label="我的">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        我的
+      </button>
+
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       THEME SYNC — design-view postMessage bridge
+  ══════════════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute(
+          'data-theme',
+          theme === 'dark' ? 'dark' : 'light'
+        );
+      }
+
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') {
+          applyTheme(e.data.theme);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
