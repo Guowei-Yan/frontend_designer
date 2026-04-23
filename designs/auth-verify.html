@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>验证邮箱 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    /* ── 6 位验证码输入框 ───────────────────────────────────── */
+
+    .code-group {
+      display:         flex;
+      justify-content: center;
+      gap:             8px;
+    }
+
+    .code-box {
+      width:         48px;
+      height:        56px;
+      border:        1.5px solid var(--divider-medium);
+      border-radius: var(--r-md);
+      background:    var(--surface-raised);
+      font-size:     22px;
+      font-weight:   700;
+      color:         var(--text-primary);
+      text-align:    center;
+      outline:       none;
+      transition:    border-color 150ms ease, box-shadow 150ms ease, background 150ms ease, color 150ms ease, transform 80ms ease;
+      caret-color:   var(--interactive);
+      font-family:   var(--font-body);
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 400px) {
+      .code-box {
+        width:  40px;
+        height: 48px;
+      }
+      .code-group { gap: 6px; }
+    }
+
+    .code-box:focus {
+      border-color: var(--interactive);
+      box-shadow:   0 0 0 3px rgba(107, 92, 77, 0.12);
+    }
+
+    [data-theme="dark"] .code-box:focus {
+      box-shadow: 0 0 0 3px rgba(196, 173, 143, 0.14);
+    }
+
+    /* 已填入状态 */
+    .code-box.filled {
+      border-color: var(--interactive);
+    }
+
+    /* 验证中 */
+    .code-group.verifying .code-box {
+      background:   var(--interactive);
+      color:        #fff;
+      border-color: var(--interactive);
+    }
+
+    /* 验证成功 */
+    .code-group.success .code-box {
+      background:   var(--success);
+      color:        #fff;
+      border-color: var(--success);
+    }
+
+    /* 验证失败抖动 */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      15%       { transform: translateX(-5px); }
+      30%       { transform: translateX(5px); }
+      45%       { transform: translateX(-4px); }
+      60%       { transform: translateX(4px); }
+      75%       { transform: translateX(-2px); }
+      90%       { transform: translateX(2px); }
+    }
+
+    .code-group.error .code-box {
+      border-color: var(--danger);
+      animation:    shake 400ms ease;
+    }
+
+    /* ── 重发链接 ──────────────────────────────────────────── */
+
+    .resend-row {
+      text-align:  center;
+      font-size:   14px;
+      color:       var(--text-secondary);
+      margin-top:  4px;
+    }
+
+    .resend-btn {
+      color:       var(--interactive);
+      font-weight: 500;
+      cursor:      pointer;
+      border:      none;
+      background:  none;
+      font-family: var(--font-body);
+      font-size:   14px;
+    }
+
+    .resend-btn:disabled {
+      color:  var(--text-muted);
+      cursor: default;
+    }
+
+    .resend-countdown {
+      color: var(--text-muted);
+    }
+
+    /* ── 状态变体说明行 ────────────────────────────────────── */
+
+    .state-demo-row {
+      display:        flex;
+      flex-direction: column;
+      gap:            24px;
+      margin-top:     32px;
+      padding-top:    24px;
+      border-top:     1px solid var(--divider);
+    }
+
+    .state-demo-label {
+      font-size:     11px;
+      font-weight:   600;
+      color:         var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align:    center;
+      margin-bottom: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="auth-page" style="align-items: flex-start; padding-top: 48px;">
+    <div class="auth-card">
+
+      <!-- 品牌 -->
+      <div class="auth-brand">
+        <div style="font-size: 40px; line-height: 1;">✉️</div>
+        <div>
+          <div class="auth-title">验证码已发送</div>
+          <div class="auth-subtitle">已发送至 hello@example.com</div>
+        </div>
+      </div>
+
+      <!-- 默认输入状态（部分填写） -->
+      <div class="state-demo-label">默认输入状态</div>
+      <div class="code-group" id="code-default">
+        <input class="code-box filled" type="text" inputmode="numeric" maxlength="1" value="4" readonly />
+        <input class="code-box filled" type="text" inputmode="numeric" maxlength="1" value="8" readonly />
+        <input class="code-box filled" type="text" inputmode="numeric" maxlength="1" value="2" readonly />
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1" placeholder="·" readonly />
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1" placeholder="·" readonly />
+        <input class="code-box" type="text" inputmode="numeric" maxlength="1" placeholder="·" readonly />
+      </div>
+
+      <!-- 重发倒计时 -->
+      <div class="resend-row">
+        没收到？<button class="resend-btn" disabled>重新发送 <span class="resend-countdown">(52s)</span></button>
+      </div>
+
+      <!-- 状态变体展示 -->
+      <div class="state-demo-row">
+
+        <div>
+          <div class="state-demo-label">验证中</div>
+          <div class="code-group verifying">
+            <input class="code-box" type="text" value="4" readonly />
+            <input class="code-box" type="text" value="8" readonly />
+            <input class="code-box" type="text" value="2" readonly />
+            <input class="code-box" type="text" value="1" readonly />
+            <input class="code-box" type="text" value="9" readonly />
+            <input class="code-box" type="text" value="6" readonly />
+          </div>
+        </div>
+
+        <div>
+          <div class="state-demo-label">验证成功</div>
+          <div class="code-group success">
+            <input class="code-box" type="text" value="4" readonly />
+            <input class="code-box" type="text" value="8" readonly />
+            <input class="code-box" type="text" value="2" readonly />
+            <input class="code-box" type="text" value="1" readonly />
+            <input class="code-box" type="text" value="9" readonly />
+            <input class="code-box" type="text" value="6" readonly />
+          </div>
+        </div>
+
+        <div>
+          <div class="state-demo-label">验证失败（抖动后清空）</div>
+          <div class="code-group error" id="code-error">
+            <input class="code-box" type="text" value="" placeholder="·" readonly />
+            <input class="code-box" type="text" value="" placeholder="·" readonly />
+            <input class="code-box" type="text" value="" placeholder="·" readonly />
+            <input class="code-box" type="text" value="" placeholder="·" readonly />
+            <input class="code-box" type="text" value="" placeholder="·" readonly />
+            <input class="code-box" type="text" value="" placeholder="·" readonly />
+          </div>
+          <div class="resend-row" style="margin-top: 10px;">
+            <button class="resend-btn">重新发送</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

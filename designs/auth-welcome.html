@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>欢迎加入 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    /* ── 等级路径进度条 ─────────────────────────────────────── */
+
+    .level-path {
+      background:    var(--surface-raised);
+      border:        1px solid var(--divider);
+      border-radius: var(--r-md);
+      padding:       16px 20px;
+    }
+
+    .level-milestones {
+      display:         flex;
+      align-items:     center;
+      justify-content: space-between;
+      position:        relative;
+      margin-bottom:   10px;
+    }
+
+    .level-track {
+      position:   absolute;
+      left:       24px;
+      right:      24px;
+      top:        50%;
+      height:     2px;
+      background: var(--divider-medium);
+      transform:  translateY(-50%);
+      z-index:    0;
+    }
+
+    .level-track-fill {
+      height:     100%;
+      background: var(--interactive);
+      width:      16%;
+    }
+
+    .level-node {
+      display:        flex;
+      flex-direction: column;
+      align-items:    center;
+      gap:            6px;
+      position:       relative;
+      z-index:        1;
+    }
+
+    .level-icon {
+      font-size:   20px;
+      line-height: 1;
+    }
+
+    .level-icon.current {
+      animation: node-breathe 3s ease-in-out infinite;
+    }
+
+    @keyframes node-breathe {
+      0%, 100% { transform: scale(1);    }
+      50%       { transform: scale(1.15); }
+    }
+
+    .level-name {
+      font-size:  11px;
+      color:      var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .level-name.reached { color: var(--interactive); font-weight: 500; }
+    .level-name.future  { color: var(--text-muted);  opacity: 0.5; }
+
+    .level-icon.future {
+      opacity: 0.35;
+    }
+
+    .level-progress-text {
+      font-size:   12px;
+      color:       var(--text-muted);
+      text-align:  center;
+      line-height: 1.5;
+      margin-top:  4px;
+    }
+
+    .level-progress-text strong {
+      color: var(--interactive);
+    }
+
+    /* ── 欢迎消息 ──────────────────────────────────────────── */
+
+    .welcome-flash {
+      text-align:  center;
+      font-size:   13px;
+      color:       var(--text-muted);
+      padding:     8px 0 4px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- 庆祝 emoji -->
+      <div class="auth-brand">
+        <div style="font-size: 40px; line-height: 1;">🎉</div>
+        <div>
+          <div class="auth-title">欢迎加入 Perth 社区</div>
+        </div>
+      </div>
+
+      <!-- 生成的默认头像 -->
+      <div style="display: flex; justify-content: center;">
+        <div class="avatar av-80">
+          <div class="avatar-img" style="
+            background: linear-gradient(135deg, #D4B890 0%, #BEB8B0 40%, #9CBFAA 100%);
+          "></div>
+        </div>
+      </div>
+
+      <!-- 昵称输入 -->
+      <form class="auth-form" novalidate>
+        <div class="field-group">
+          <input
+            class="field-input"
+            type="text"
+            placeholder="给自己起个名字"
+            autocomplete="nickname"
+            style="text-align: center;"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">
+          进入社区
+        </button>
+      </form>
+
+      <!-- 欢迎消息 -->
+      <div class="welcome-flash">你好，社区新邻居 👋</div>
+
+      <!-- 等级路径 -->
+      <div class="level-path">
+
+        <div class="level-milestones">
+          <div class="level-track">
+            <div class="level-track-fill"></div>
+          </div>
+
+          <div class="level-node">
+            <div class="level-icon current">🌱</div>
+            <div class="level-name reached">贫农</div>
+          </div>
+
+          <div class="level-node">
+            <div class="level-icon future">🌿</div>
+            <div class="level-name future">中农</div>
+          </div>
+
+          <div class="level-node">
+            <div class="level-icon future">🌳</div>
+            <div class="level-name future">富农</div>
+          </div>
+
+          <div class="level-node">
+            <div class="level-icon future">🏠</div>
+            <div class="level-name future">地主</div>
+          </div>
+
+        </div>
+
+        <div class="level-progress-text">
+          你现在是 <strong>贫农</strong> · 继续贡献积分升级
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1184,3 +1184,743 @@ button {
   .fab        { display: none;  }
   .topbar-search { display: none; }
 }
+
+
+/* ── 21. Buttons ───────────────────────────────────────────── */
+
+.btn {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             6px;
+  height:          48px;
+  padding:         0 20px;
+  border-radius:   var(--r-md);
+  font-size:       15px;
+  font-weight:     500;
+  font-family:     var(--font-body);
+  cursor:          pointer;
+  border:          none;
+  transition:      background 150ms ease, color 150ms ease, opacity 150ms ease;
+  white-space:     nowrap;
+  user-select:     none;
+}
+
+.btn-primary {
+  background: var(--interactive);
+  color:      #fff;
+}
+
+.btn-primary:hover  { background: var(--interactive-hover); }
+.btn-primary:active { background: var(--interactive-press); }
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  background: var(--divider-medium);
+  color:      var(--text-muted);
+  cursor:     default;
+}
+
+.btn-ghost {
+  background: var(--interactive-ghost);
+  color:      var(--interactive);
+}
+
+.btn-ghost:hover  { background: var(--interactive-ghost-hover); }
+
+.btn-danger {
+  background: var(--danger);
+  color:      #fff;
+}
+
+.btn-danger:hover { opacity: 0.88; }
+
+.btn-sm {
+  height:    36px;
+  padding:   0 14px;
+  font-size: 13px;
+}
+
+.btn-full { width: 100%; }
+
+.btn svg {
+  width:        18px;
+  height:       18px;
+  stroke:       currentColor;
+  stroke-width: 1.5;
+  fill:         none;
+  flex-shrink:  0;
+}
+
+
+/* ── 22. Form Fields ───────────────────────────────────────── */
+
+.field-group {
+  display:        flex;
+  flex-direction: column;
+  gap:            6px;
+}
+
+.field-label {
+  font-size:   13px;
+  font-weight: 500;
+  color:       var(--text-secondary);
+}
+
+.field-input {
+  height:        48px;
+  padding:       0 14px;
+  border:        1.5px solid var(--divider-medium);
+  border-radius: var(--r-md);
+  background:    var(--surface-raised);
+  color:         var(--text-primary);
+  font-size:     15px;
+  font-family:   var(--font-body);
+  outline:       none;
+  transition:    border-color 150ms ease, box-shadow 150ms ease;
+  width:         100%;
+  box-sizing:    border-box;
+}
+
+.field-input::placeholder {
+  color: var(--text-muted);
+}
+
+.field-input:focus {
+  border-color: var(--interactive);
+  box-shadow:   0 0 0 3px rgba(107, 92, 77, 0.12);
+}
+
+[data-theme="dark"] .field-input:focus {
+  box-shadow: 0 0 0 3px rgba(196, 173, 143, 0.14);
+}
+
+.field-input.field-error {
+  border-color: var(--danger);
+}
+
+.field-error-msg {
+  font-size: 13px;
+  color:     var(--danger);
+  min-height: 18px;
+}
+
+.field-textarea {
+  resize:     none;
+  height:     auto;
+  min-height: 80px;
+  padding:    12px 14px;
+  line-height: 1.7;
+}
+
+
+/* ── 23. Auth Layout ───────────────────────────────────────── */
+
+.auth-page {
+  min-height:      100vh;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         24px 16px;
+  background:      var(--surface);
+}
+
+.auth-card {
+  width:     100%;
+  max-width: 380px;
+  display:   flex;
+  flex-direction: column;
+  gap:       24px;
+}
+
+.auth-brand {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            10px;
+  text-align:     center;
+}
+
+.auth-stamp {
+  width:           48px;
+  height:          48px;
+  background:      var(--interactive);
+  border-radius:   var(--r-md);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           #fff;
+  font-size:       24px;
+  font-weight:     700;
+  letter-spacing:  -0.5px;
+  user-select:     none;
+}
+
+.auth-title {
+  font-size:   20px;
+  font-weight: 600;
+  color:       var(--text-primary);
+  line-height: 1.3;
+}
+
+.auth-subtitle {
+  font-size:   14px;
+  color:       var(--text-secondary);
+  line-height: 1.5;
+}
+
+.auth-form {
+  display:        flex;
+  flex-direction: column;
+  gap:            16px;
+}
+
+.auth-footer {
+  text-align:  center;
+  font-size:   14px;
+  color:       var(--text-secondary);
+}
+
+.auth-link {
+  color:           var(--interactive);
+  font-weight:     500;
+  text-decoration: none;
+  cursor:          pointer;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+
+/* ── 24. Toast ─────────────────────────────────────────────── */
+
+.toast {
+  position:       fixed;
+  bottom:         24px;
+  left:           50%;
+  transform:      translateX(-50%);
+  background:     var(--text-primary);
+  color:          var(--surface);
+  padding:        10px 18px;
+  border-radius:  var(--r-md);
+  font-size:      14px;
+  font-weight:    500;
+  white-space:    nowrap;
+  z-index:        9999;
+  pointer-events: none;
+  opacity:        0.95;
+  box-shadow:     0 4px 16px rgba(0,0,0,0.16);
+}
+
+
+/* ── 25. Modal / Bottom Sheet ──────────────────────────────── */
+
+.modal-overlay {
+  position:        fixed;
+  inset:           0;
+  background:      rgba(26, 24, 22, 0.50);
+  z-index:         200;
+  display:         flex;
+  align-items:     flex-end;
+  justify-content: center;
+}
+
+.bottom-sheet {
+  background:    var(--surface-raised);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  width:         100%;
+  max-width:     480px;
+  padding:       20px 20px 32px;
+  display:       flex;
+  flex-direction: column;
+  gap:           16px;
+}
+
+.bottom-sheet-handle {
+  width:         40px;
+  height:        4px;
+  background:    var(--divider-medium);
+  border-radius: var(--r-full);
+  align-self:    center;
+  margin-bottom: 4px;
+}
+
+.bottom-sheet-title {
+  font-size:   16px;
+  font-weight: 600;
+  color:       var(--text-primary);
+  text-align:  center;
+}
+
+.bottom-sheet-desc {
+  font-size:   14px;
+  color:       var(--text-secondary);
+  text-align:  center;
+  line-height: 1.6;
+}
+
+.bottom-sheet-actions {
+  display:        flex;
+  flex-direction: column;
+  gap:            10px;
+  margin-top:     4px;
+}
+
+
+/* ── 26. Admin Layout ──────────────────────────────────────── */
+
+:root {
+  --admin-sidebar-width: 220px;
+  --admin-topbar-height: 56px;
+}
+
+.admin-page {
+  display:    flex;
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+.admin-sidebar {
+  width:     var(--admin-sidebar-width);
+  flex-shrink: 0;
+  background:  var(--surface-raised);
+  border-right: 1px solid var(--divider);
+  position:   fixed;
+  top:        0;
+  left:       0;
+  bottom:     0;
+  display:    flex;
+  flex-direction: column;
+  z-index:    50;
+}
+
+.admin-sidebar-brand {
+  height:      var(--admin-topbar-height);
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+  padding:     0 16px;
+  border-bottom: 1px solid var(--divider);
+  flex-shrink: 0;
+}
+
+.admin-sidebar-logo {
+  font-size:   14px;
+  font-weight: 600;
+  color:       var(--text-primary);
+  line-height: 1.2;
+}
+
+.admin-sidebar-sub {
+  font-size: 11px;
+  color:     var(--text-muted);
+}
+
+.admin-nav {
+  flex:       1;
+  padding:    12px 8px;
+  overflow-y: auto;
+}
+
+.admin-nav-item {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  padding:       8px 10px;
+  border-radius: var(--r-md);
+  font-size:     13px;
+  font-weight:   400;
+  color:         var(--text-secondary);
+  cursor:        pointer;
+  transition:    background 150ms ease, color 150ms ease;
+  border:        none;
+  background:    none;
+  font-family:   var(--font-body);
+  width:         100%;
+  text-align:    left;
+  user-select:   none;
+}
+
+.admin-nav-item:hover {
+  background: var(--interactive-ghost);
+  color:      var(--text-primary);
+}
+
+.admin-nav-item.active {
+  background:  var(--interactive-ghost);
+  color:       var(--interactive);
+  font-weight: 500;
+}
+
+.admin-nav-item svg {
+  width:        16px;
+  height:       16px;
+  stroke:       currentColor;
+  stroke-width: 1.5;
+  fill:         none;
+  flex-shrink:  0;
+}
+
+.admin-nav-badge {
+  margin-left:     auto;
+  background:      var(--danger);
+  color:           #fff;
+  font-size:       10px;
+  font-weight:     700;
+  min-width:       18px;
+  height:          18px;
+  border-radius:   var(--r-full);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         0 4px;
+}
+
+.admin-main {
+  margin-left: var(--admin-sidebar-width);
+  flex:        1;
+  min-width:   0;
+  display:     flex;
+  flex-direction: column;
+}
+
+.admin-topbar {
+  height:        var(--admin-topbar-height);
+  background:    var(--surface);
+  border-bottom: 1px solid var(--divider);
+  display:       flex;
+  align-items:   center;
+  padding:       0 32px;
+  position:      sticky;
+  top:           0;
+  z-index:       40;
+  gap:           12px;
+}
+
+.admin-topbar-title {
+  font-size:   16px;
+  font-weight: 600;
+  color:       var(--text-primary);
+  flex:        1;
+}
+
+.admin-content {
+  padding: 32px;
+  flex:    1;
+}
+
+.admin-section-title {
+  font-size:     11px;
+  font-weight:   600;
+  color:         var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  margin-bottom: 12px;
+}
+
+.stat-card-grid {
+  display:               grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:                   16px;
+  margin-bottom:         32px;
+}
+
+.stat-card {
+  background:    var(--surface-raised);
+  border-radius: var(--r-lg);
+  padding:       20px;
+  border:        1px solid var(--divider);
+}
+
+.stat-card-value {
+  font-size:            28px;
+  font-weight:          700;
+  color:                var(--text-primary);
+  line-height:          1;
+  margin-bottom:        6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-card-value.val-warn    { color: var(--warning); }
+.stat-card-value.val-danger  { color: var(--danger);  }
+.stat-card-value.val-success { color: var(--success); }
+
+.stat-card-label {
+  font-size: 13px;
+  color:     var(--text-muted);
+}
+
+.admin-panel {
+  background:    var(--surface-raised);
+  border-radius: var(--r-lg);
+  border:        1px solid var(--divider);
+  overflow:      hidden;
+  margin-bottom: 24px;
+}
+
+.admin-panel-header {
+  display:       flex;
+  align-items:   center;
+  padding:       14px 20px;
+  border-bottom: 1px solid var(--divider);
+  gap:           10px;
+}
+
+.admin-panel-title {
+  font-size:   14px;
+  font-weight: 600;
+  color:       var(--text-primary);
+  flex:        1;
+}
+
+.admin-panel-body {
+  padding: 0;
+}
+
+.admin-activity-row {
+  display:       flex;
+  align-items:   flex-start;
+  gap:           10px;
+  padding:       12px 20px;
+  border-bottom: 1px solid var(--divider);
+  font-size:     13px;
+}
+
+.admin-activity-row:last-child {
+  border-bottom: none;
+}
+
+.admin-activity-time {
+  color:       var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width:   60px;
+}
+
+.admin-activity-type {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.admin-activity-type.type-post    { color: var(--interactive); }
+.admin-activity-type.type-block   { color: var(--danger);      }
+.admin-activity-type.type-resolve { color: var(--success);     }
+.admin-activity-type.type-vote    { color: var(--warning);     }
+
+.admin-activity-desc {
+  color:   var(--text-secondary);
+  flex:    1;
+  min-width: 0;
+}
+
+
+/* ── 27. Tab Bar ───────────────────────────────────────────── */
+
+.tab-bar {
+  display:       flex;
+  align-items:   center;
+  gap:           0;
+  border-bottom: 1px solid var(--divider);
+  padding:       0 20px;
+}
+
+.tab-item {
+  display:         flex;
+  align-items:     center;
+  gap:             6px;
+  padding:         10px 14px;
+  font-size:       14px;
+  font-weight:     400;
+  color:           var(--text-secondary);
+  cursor:          pointer;
+  border:          none;
+  background:      none;
+  font-family:     var(--font-body);
+  border-bottom:   2px solid transparent;
+  margin-bottom:   -1px;
+  transition:      color 150ms ease, border-color 150ms ease;
+  white-space:     nowrap;
+}
+
+.tab-item:hover {
+  color: var(--text-primary);
+}
+
+.tab-item.active {
+  color:        var(--interactive);
+  font-weight:  600;
+  border-bottom-color: var(--interactive);
+}
+
+.tab-count {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  background:      var(--interactive-ghost);
+  color:           var(--interactive);
+  font-size:       11px;
+  font-weight:     700;
+  min-width:       20px;
+  height:          20px;
+  border-radius:   var(--r-full);
+  padding:         0 5px;
+}
+
+
+/* ── 28. Moderation Card ───────────────────────────────────── */
+
+.mod-card {
+  border-bottom: 1px solid var(--divider);
+  padding:       20px;
+}
+
+.mod-card:last-child {
+  border-bottom: none;
+}
+
+.mod-card-header {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  margin-bottom: 10px;
+}
+
+.mod-status-dot {
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  flex-shrink:   0;
+}
+
+.mod-status-dot.pending { background: var(--warning); }
+.mod-status-dot.passed  { background: var(--success); }
+.mod-status-dot.blocked { background: var(--danger);  }
+
+.mod-card-user {
+  font-size:   13px;
+  font-weight: 500;
+  color:       var(--text-primary);
+  flex:        1;
+}
+
+.mod-card-time {
+  font-size:  12px;
+  color:      var(--text-muted);
+  white-space: nowrap;
+}
+
+.mod-card-excerpt {
+  font-size:   14px;
+  color:       var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  display:     -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow:    hidden;
+}
+
+.mod-card-ai {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  flex-wrap:   wrap;
+  margin-bottom: 12px;
+}
+
+.mod-ai-badge {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           4px;
+  padding:       2px 8px;
+  border-radius: var(--r-sm);
+  font-size:     12px;
+  font-weight:   500;
+}
+
+.mod-ai-badge.tier-1 {
+  background: rgba(107, 92, 77, 0.10);
+  color:      var(--interactive);
+}
+
+.mod-ai-confidence {
+  font-size: 12px;
+  color:     var(--text-muted);
+}
+
+.mod-ai-confidence.conf-high   { color: var(--success); }
+.mod-ai-confidence.conf-medium { color: var(--warning); }
+.mod-ai-confidence.conf-low    { color: var(--danger);  }
+
+.mod-ai-label {
+  font-size: 12px;
+  color:     var(--text-secondary);
+}
+
+.mod-card-actions {
+  display: flex;
+  gap:     8px;
+}
+
+
+/* ── 29. Topbar Back Variant ───────────────────────────────── */
+
+.topbar-back {
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  cursor:        pointer;
+  flex:          1;
+  min-width:     0;
+}
+
+.topbar-back-btn {
+  width:           36px;
+  height:          36px;
+  border-radius:   var(--r-md);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           var(--text-secondary);
+  transition:      background 150ms ease;
+  flex-shrink:     0;
+}
+
+.topbar-back-btn:hover {
+  background: var(--interactive-ghost);
+}
+
+.topbar-back-btn svg {
+  width:        20px;
+  height:       20px;
+  stroke:       currentColor;
+  stroke-width: 1.5;
+  fill:         none;
+}
+
+.topbar-more-btn {
+  width:           36px;
+  height:          36px;
+  border-radius:   var(--r-md);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           var(--text-secondary);
+  transition:      background 150ms ease;
+  cursor:          pointer;
+  flex-shrink:     0;
+}
+
+.topbar-more-btn:hover {
+  background: var(--interactive-ghost);
+}
+
+.topbar-more-btn svg {
+  width:        20px;
+  height:       20px;
+  stroke:       currentColor;
+  stroke-width: 1.5;
+  fill:         none;
+}
