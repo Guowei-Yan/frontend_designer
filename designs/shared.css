@@ -1,6 +1,6 @@
 /* ============================================================
    Plan-Local · Shared Design System
-   Version 1.2 · Stage 1
+   Version 1.3 · Stage 1
    ============================================================ */
 
 
@@ -28,20 +28,14 @@
   --cat-event:               #B8893A;
   --cat-chat:                #8A8480;
 
-  --cat-help-aura:           199, 91, 58;
-  --cat-recommend-aura:      90, 138, 106;
-  --cat-event-aura:          184, 137, 58;
-  --cat-chat-aura:           138, 132, 128;
-
-  --aura-peak:               0.13;
-  --aura-width:              56px;
-
   --success:                 #5A8A6A;
   --warning:                 #B8893A;
   --danger:                  #C75B3A;
 
   --level-landlord:          #C5A55A;
   --level-wealthy-ring:      rgba(107, 92, 77, 0.38);
+
+  --aura-width:   56px;
 
   --font-body:
     -apple-system, "PingFang SC", "Microsoft YaHei",
@@ -79,13 +73,6 @@
   --cat-recommend:           #6FA07E;
   --cat-event:               #CCAA5C;
   --cat-chat:                #7A7470;
-
-  --cat-help-aura:           212, 114, 79;
-  --cat-recommend-aura:      111, 160, 126;
-  --cat-event-aura:          204, 170, 92;
-  --cat-chat-aura:           122, 116, 112;
-
-  --aura-peak:               0.17;
 
   --success:                 #6FA07E;
   --warning:                 #CCAA5C;
@@ -226,30 +213,16 @@ button {
   user-select:    none;
 }
 
-.cm-help {
-  color:      var(--cat-help);
-  background: rgba(199, 91, 58, 0.10);
-}
+.cm-help      { color: var(--cat-help);      background: rgba(199, 91,  58,  0.13); }
+.cm-recommend { color: var(--cat-recommend); background: rgba(90,  138, 106, 0.13); }
+.cm-event     { color: var(--cat-event);     background: rgba(184, 137, 58,  0.13); }
+.cm-chat      { color: var(--cat-chat);      background: rgba(138, 132, 128, 0.13); }
 
-.cm-recommend {
-  color:      var(--cat-recommend);
-  background: rgba(90, 138, 106, 0.10);
-}
+[data-theme="dark"] .cm-help      { background: rgba(212, 114, 79,  0.18); }
+[data-theme="dark"] .cm-recommend { background: rgba(111, 160, 126, 0.18); }
+[data-theme="dark"] .cm-event     { background: rgba(204, 170, 92,  0.18); }
+[data-theme="dark"] .cm-chat      { background: rgba(122, 116, 112, 0.18); }
 
-.cm-event {
-  color:      var(--cat-event);
-  background: rgba(184, 137, 58, 0.10);
-}
-
-.cm-chat {
-  color:      var(--cat-chat);
-  background: rgba(138, 132, 128, 0.10);
-}
-
-.cm-help      { background: rgba(199, 91, 58, 0.13); }
-.cm-recommend { background: rgba(90, 138, 106, 0.13); }
-.cm-event     { background: rgba(184, 137, 58, 0.13); }
-.cm-chat      { background: rgba(138, 132, 128, 0.13); }
 
 /* ── 7. Post Item ──────────────────────────────────────────── */
 
@@ -282,6 +255,12 @@ button {
 
 /* ── 8. Aura System ────────────────────────────────────────── */
 
+/*
+  核心设计决策：不使用元素级 opacity，直接将透明度烤进 rgba()。
+  亮色：左边缘 ~13%，暗色：左边缘 ~38%。
+  这样避免双重 opacity 导致暗色模式下色晕消失。
+*/
+
 .post-aura {
   position:       absolute;
   top:            0;
@@ -290,67 +269,107 @@ button {
   width:          var(--aura-width);
   pointer-events: none;
   z-index:        0;
-  opacity:        var(--aura-peak);
 }
 
+/* 亮色模式 */
 .post-item[data-category="help"] .post-aura {
-  background: linear-gradient(
-    to right,
-    rgba(var(--cat-help-aura), 0.9) 0%,
-    rgba(var(--cat-help-aura), 0.3) 40%,
-    transparent                     100%
+  background: linear-gradient(to right,
+    rgba(199, 91,  58,  0.14) 0%,
+    rgba(199, 91,  58,  0.05) 55%,
+    transparent               100%
   );
 }
 
 .post-item[data-category="recommend"] .post-aura {
-  background: linear-gradient(
-    to right,
-    rgba(var(--cat-recommend-aura), 0.9) 0%,
-    rgba(var(--cat-recommend-aura), 0.3) 40%,
-    transparent                          100%
+  background: linear-gradient(to right,
+    rgba(90,  138, 106, 0.14) 0%,
+    rgba(90,  138, 106, 0.05) 55%,
+    transparent               100%
   );
 }
 
 .post-item[data-category="event"] .post-aura {
-  background: linear-gradient(
-    to right,
-    rgba(var(--cat-event-aura), 0.9) 0%,
-    rgba(var(--cat-event-aura), 0.3) 40%,
-    transparent                      100%
+  background: linear-gradient(to right,
+    rgba(184, 137, 58,  0.14) 0%,
+    rgba(184, 137, 58,  0.05) 55%,
+    transparent               100%
   );
 }
 
 .post-item[data-category="chat"] .post-aura {
-  background: linear-gradient(
-    to right,
-    rgba(var(--cat-chat-aura), 0.9) 0%,
-    rgba(var(--cat-chat-aura), 0.3) 40%,
-    transparent                     100%
+  background: linear-gradient(to right,
+    rgba(138, 132, 128, 0.11) 0%,
+    rgba(138, 132, 128, 0.03) 55%,
+    transparent               100%
   );
 }
 
+/* 暗色模式 — 透明度大幅提升，深底色上才能显现 */
+[data-theme="dark"] .post-item[data-category="help"] .post-aura {
+  background: linear-gradient(to right,
+    rgba(212, 114, 79,  0.42) 0%,
+    rgba(212, 114, 79,  0.12) 50%,
+    transparent               100%
+  );
+}
+
+[data-theme="dark"] .post-item[data-category="recommend"] .post-aura {
+  background: linear-gradient(to right,
+    rgba(111, 160, 126, 0.42) 0%,
+    rgba(111, 160, 126, 0.12) 50%,
+    transparent               100%
+  );
+}
+
+[data-theme="dark"] .post-item[data-category="event"] .post-aura {
+  background: linear-gradient(to right,
+    rgba(204, 170, 92,  0.42) 0%,
+    rgba(204, 170, 92,  0.12) 50%,
+    transparent               100%
+  );
+}
+
+[data-theme="dark"] .post-item[data-category="chat"] .post-aura {
+  background: linear-gradient(to right,
+    rgba(122, 116, 112, 0.32) 0%,
+    rgba(122, 116, 112, 0.08) 50%,
+    transparent               100%
+  );
+}
+
+/* 呼吸动效：未解决求助帖，在烤入值基础上做 opacity 0.6→1.0 脉动 */
 .post-item[data-category="help"][data-solved="false"] .post-aura {
   animation: aura-breathe 4s ease-in-out infinite;
 }
 
-.post-item[data-category="help"][data-solved="true"] .post-aura {
-  background: linear-gradient(
-    to right,
-    rgba(var(--cat-recommend-aura), 0.6) 0%,
-    rgba(var(--cat-recommend-aura), 0.15) 40%,
-    transparent                           100%
-  );
-  opacity: calc(var(--aura-peak) * 0.5);
+@keyframes aura-breathe {
+  0%,  100% { opacity: 0.60; }
+  50%       { opacity: 1.00; }
 }
 
-@keyframes aura-breathe {
-  0%,  100% { opacity: calc(var(--aura-peak) * 0.7); }
-  50%       { opacity: calc(var(--aura-peak) * 1.3); }
+/* 已解决：色晕换成苔藓绿，停止呼吸 */
+.post-item[data-category="help"][data-solved="true"] .post-aura {
+  background: linear-gradient(to right,
+    rgba(90,  138, 106, 0.10) 0%,
+    rgba(90,  138, 106, 0.03) 55%,
+    transparent               100%
+  );
+  animation: none;
+}
+
+[data-theme="dark"] .post-item[data-category="help"][data-solved="true"] .post-aura {
+  background: linear-gradient(to right,
+    rgba(111, 160, 126, 0.28) 0%,
+    rgba(111, 160, 126, 0.07) 55%,
+    transparent               100%
+  );
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .post-item[data-category="help"][data-solved="false"] .post-aura {
     animation: none;
+    opacity:   1;
   }
 }
 
@@ -452,18 +471,6 @@ button {
   margin-bottom: 4px;
 }
 
-.post-excerpt {
-  font-size:          15px;
-  line-height:        1.7;
-  color:              var(--text-secondary);
-  display:            -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow:           hidden;
-  position:           relative;
-}
-
 .post-excerpt-fade {
   font-size:   15px;
   line-height: 1.7;
@@ -480,21 +487,12 @@ button {
   right:      0;
   width:      5em;
   height:     calc(15px * 1.7);
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    var(--surface) 90%
-  );
+  background: linear-gradient(to right, transparent 0%, var(--surface) 90%);
   pointer-events: none;
 }
 
-.post-item:hover .post-excerpt-fade::after {
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(0, 0, 0, 0.018) 50%,
-    var(--surface) 90%
-  );
+[data-theme="dark"] .post-item:hover .post-excerpt-fade::after {
+  background: linear-gradient(to right, transparent 0%, #1A1816 90%);
 }
 
 
@@ -862,6 +860,11 @@ button {
   line-height:   1.4;
 }
 
+[data-theme="dark"] .breathing-battle {
+  background:   rgba(204, 170, 92, 0.09);
+  border-color: rgba(204, 170, 92, 0.25);
+}
+
 
 /* ── 16. FAB ───────────────────────────────────────────────── */
 
@@ -1013,9 +1016,9 @@ button {
 }
 
 .sidebar-stat-value {
-  font-size:      15px;
-  font-weight:    600;
-  color:          var(--text-primary);
+  font-size:            15px;
+  font-weight:          600;
+  color:                var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1051,6 +1054,14 @@ button {
 .tag-pill:hover {
   background: var(--interactive-ghost-hover);
   color:      var(--text-primary);
+}
+
+[data-theme="dark"] .tag-pill {
+  background: rgba(196, 173, 143, 0.08);
+}
+
+[data-theme="dark"] .tag-pill:hover {
+  background: rgba(196, 173, 143, 0.15);
 }
 
 .sidebar-user-row {
@@ -1108,6 +1119,10 @@ button {
   vertical-align: middle;
 }
 
+[data-theme="dark"] .sidebar-hot-badge {
+  background: rgba(204, 170, 92, 0.14);
+}
+
 
 /* ── 20. Bottom Navigation ─────────────────────────────────── */
 
@@ -1163,11 +1178,6 @@ button {
 .bnav-item.bnav-active svg {
   stroke-width: 2;
 }
-
-[data-theme="dark"] .cm-help      { background: rgba(212, 114, 79, 0.18); }
-[data-theme="dark"] .cm-recommend { background: rgba(111, 160, 126, 0.18); }
-[data-theme="dark"] .cm-event     { background: rgba(204, 170, 92, 0.18); }
-[data-theme="dark"] .cm-chat      { background: rgba(122, 116, 112, 0.18); }
 
 @media (max-width: 639px) {
   .bottom-nav { display: block; }
