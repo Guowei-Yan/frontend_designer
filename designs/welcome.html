@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>欢迎加入 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--surface);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .auth-emoji {
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .auth-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    /* ── Large Avatar ────────────────────────────────────────── */
+
+    .welcome-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+    }
+
+    /* ── Nickname Input ──────────────────────────────────────── */
+
+    .nickname-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      border-radius: var(--r-md);
+      border: 1px solid var(--divider-medium);
+      background: var(--surface-raised);
+      font-size: 15px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      outline: none;
+      text-align: center;
+      margin-bottom: 8px;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .nickname-input::placeholder { color: var(--text-muted); }
+
+    .nickname-input:focus {
+      border-color: var(--interactive);
+      box-shadow: 0 0 0 3px var(--interactive-ghost);
+    }
+
+    .nickname-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* ── Level Badge ─────────────────────────────────────────── */
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--interactive-ghost);
+      border-radius: var(--r-full);
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .level-badge .emoji { font-size: 14px; }
+
+    /* ── Button ──────────────────────────────────────────────── */
+
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      background: var(--interactive);
+      color: #fff;
+      border-radius: var(--r-md);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      border: none;
+      cursor: pointer;
+      transition: background 150ms ease, transform 100ms ease;
+    }
+
+    .btn-primary:hover { background: var(--interactive-hover); }
+    .btn-primary:active { background: var(--interactive-press); transform: scale(0.98); }
+
+    /* ── Super Narrow / Short ────────────────────────────────── */
+
+    @media (max-width: 359px) {
+      .auth-page { padding: 16px; }
+      .auth-title { font-size: 18px; }
+    }
+
+    @media (max-height: 500px) {
+      .auth-emoji { font-size: 32px; margin-bottom: 12px; }
+      .welcome-avatar { width: 64px; height: 64px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-emoji">🎉</div>
+      <div class="auth-title">欢迎加入 Perth 社区</div>
+
+      <div class="welcome-avatar"></div>
+
+      <input
+        type="text"
+        class="nickname-input"
+        placeholder="给自己起个名字"
+        value=""
+        maxlength="20"
+      />
+      <div class="nickname-hint">不填则自动生成随机昵称</div>
+
+      <div class="level-badge">
+        <span class="emoji">🌱</span>
+        你现在是 贫农 · 继续贡献升级
+      </div>
+
+      <button class="btn-primary">进入社区</button>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

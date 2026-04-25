@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>审核队列 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      background: var(--surface);
+    }
+
+    .admin-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--surface-raised);
+      border-right: 1px solid var(--divider);
+      padding: 24px 0;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .admin-sidebar::-webkit-scrollbar { display: none; }
+    .admin-sidebar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .admin-sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--divider);
+      margin-bottom: 16px;
+    }
+
+    .admin-sidebar-brand .brand-stamp {
+      width: 28px; height: 28px;
+      font-size: 14px;
+      border-radius: var(--r-sm);
+    }
+
+    .admin-sidebar-brand .brand-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .admin-sidebar-brand .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .admin-nav {
+      padding: 0 12px;
+    }
+
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--r-md);
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+      margin-bottom: 2px;
+      border: none;
+      background: none;
+      width: 100%;
+      font-family: var(--font-body);
+      text-align: left;
+    }
+
+    .admin-nav-item:hover {
+      background: var(--interactive-ghost);
+      color: var(--text-primary);
+    }
+
+    .admin-nav-item.active {
+      background: var(--interactive-ghost);
+      color: var(--interactive);
+      font-weight: 500;
+    }
+
+    .admin-nav-item svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; stroke-width: 1.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .admin-nav-badge {
+      margin-left: auto;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: var(--r-full);
+      background: var(--danger);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .admin-nav-badge.warn {
+      background: var(--warning);
+      color: var(--text-primary);
+    }
+
+    .admin-main {
+      flex: 1;
+      margin-left: 220px;
+      padding: 24px 32px 40px;
+      max-width: calc(1200px - 220px);
+    }
+
+    .admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .admin-page-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .admin-user:hover {
+      background: var(--interactive-ghost);
+    }
+
+    .admin-user-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ── Tabs ────────────────────────────────────────────────── */
+
+    .mod-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--divider);
+      padding-bottom: 1px;
+    }
+
+    .mod-tab {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: color 150ms ease, border-color 150ms ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mod-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .mod-tab.active {
+      color: var(--interactive);
+      border-bottom-color: var(--interactive);
+      font-weight: 500;
+    }
+
+    .mod-tab-badge {
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: var(--r-full);
+      background: var(--warning);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Moderation Cards ────────────────────────────────────── */
+
+    .mod-card {
+      background: var(--surface-raised);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      border: 1px solid var(--divider);
+      margin-bottom: 16px;
+    }
+
+    .mod-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .mod-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mod-status-dot.pending { background: var(--warning); }
+    .mod-status-dot.passed  { background: var(--success); }
+
+    .mod-card-meta {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-secondary);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mod-card-meta .name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .mod-card-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .mod-preview {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .mod-ai-info {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border-radius: var(--r-md);
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+
+    .mod-ai-label {
+      color: var(--text-muted);
+    }
+
+    .mod-ai-value {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .mod-ai-value.tier { color: var(--text-primary); }
+
+    .mod-confidence {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 6px;
+      border-radius: var(--r-xs);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .mod-confidence.high   { background: rgba(90,  138, 106, 0.13); color: var(--success); }
+    .mod-confidence.medium { background: rgba(184, 137, 58,  0.13); color: var(--warning); }
+    .mod-confidence.low    { background: rgba(199, 91,  58,  0.13); color: var(--danger); }
+
+    [data-theme="dark"] .mod-confidence.high   { background: rgba(111, 160, 126, 0.18); }
+    [data-theme="dark"] .mod-confidence.medium { background: rgba(204, 170, 92,  0.18); }
+    [data-theme="dark"] .mod-confidence.low    { background: rgba(212, 114, 79,  0.18); }
+
+    .mod-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mod-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--r-md);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      border: none;
+      cursor: pointer;
+      transition: opacity 150ms ease, transform 100ms ease;
+    }
+
+    .mod-btn:hover { opacity: 0.9; }
+    .mod-btn:active { transform: scale(0.97); }
+
+    .mod-btn svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; stroke-width: 2.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .mod-btn-pass {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .mod-btn-reject {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .mod-btn-ghost {
+      background: var(--interactive-ghost);
+      color: var(--text-secondary);
+    }
+
+    .mod-btn-ghost:hover {
+      background: var(--interactive-ghost-hover);
+      color: var(--text-primary);
+    }
+
+    /* ── Mobile Warning ──────────────────────────────────────── */
+
+    .mobile-warning {
+      display: none;
+    }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+
+    @media (max-width: 1023px) {
+      .admin-sidebar { display: none; }
+      .admin-main { margin-left: 0; padding: 20px; max-width: none; }
+    }
+
+    @media (max-width: 480px) {
+      .admin-main { padding: 16px; }
+      .mod-actions { flex-wrap: wrap; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="brand-stamp">P</div>
+        <div>
+          <div class="brand-text">Plan-Local</div>
+          <div class="brand-sub">管理后台</div>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          概览
+        </button>
+        <button class="admin-nav-item active">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          审核
+          <span class="admin-nav-badge warn">3</span>
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          拦截
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          用户
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          公告
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          设置
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+      <div class="admin-topbar">
+        <div class="admin-page-title">审核队列</div>
+        <div class="admin-user">
+          <div class="avatar av-28">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+            "></div>
+          </div>
+          <span class="admin-user-name">老王</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="mod-tabs">
+        <button class="mod-tab active">
+          ⏳ 待审核
+          <span class="mod-tab-badge">3</span>
+        </button>
+        <button class="mod-tab">✅ 已通过</button>
+        <button class="mod-tab">全部</button>
+      </div>
+
+      <!-- Card 1 -->
+      <div class="mod-card">
+        <div class="mod-card-header">
+          <div class="mod-status-dot pending"></div>
+          <div class="mod-card-meta">
+            <span class="name">老王 · 富农</span> · 23 分钟前
+          </div>
+          <div class="mod-card-time">待人工复核</div>
+        </div>
+        <div class="mod-preview">
+          厨房下水堵了三天了，求推荐靠谱的管道工。试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！
+        </div>
+        <div class="mod-ai-info">
+          <span class="mod-ai-label">AI 判定</span>
+          <span class="mod-ai-value tier">Tier-1 · 通过</span>
+          <span class="mod-confidence high">置信度 94%</span>
+          <span class="mod-ai-label">分类</span>
+          <span class="mod-ai-value">求助</span>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-btn mod-btn-pass">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            通过
+          </button>
+          <button class="mod-btn mod-btn-reject">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            拒绝
+          </button>
+          <button class="mod-btn mod-btn-ghost">详情</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="mod-card">
+        <div class="mod-card-header">
+          <div class="mod-status-dot pending"></div>
+          <div class="mod-card-meta">
+            <span class="name">匿名用户</span> · 15 分钟前
+          </div>
+          <div class="mod-card-time">待人工复核</div>
+        </div>
+        <div class="mod-preview">
+          🔥🔥🔥 超低价疏通下水道 24小时上门服务 电话 04xx xxx xxx 微信同号 专业疏通马桶地漏厨房下水道 价格透明无隐藏费用  Perth 全区覆盖
+        </div>
+        <div class="mod-ai-info">
+          <span class="mod-ai-label">AI 判定</span>
+          <span class="mod-ai-value tier">Tier-1 · 可疑</span>
+          <span class="mod-confidence medium">置信度 72%</span>
+          <span class="mod-ai-label">风险</span>
+          <span class="mod-ai-value">违规广告 / 联系方式轰炸</span>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-btn mod-btn-pass">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            通过
+          </button>
+          <button class="mod-btn mod-btn-reject">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            拒绝
+          </button>
+          <button class="mod-btn mod-btn-ghost">详情</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="mod-card">
+        <div class="mod-card-header">
+          <div class="mod-status-dot pending"></div>
+          <div class="mod-card-meta">
+            <span class="name">阿珍 · 贫农</span> · 刚刚
+          </div>
+          <div class="mod-card-time">待人工复核</div>
+        </div>
+        <div class="mod-preview">
+          有人知道 Joondalup 附近哪里可以修锁吗？钥匙断在锁里了，现在出不了门，急需帮助。
+        </div>
+        <div class="mod-ai-info">
+          <span class="mod-ai-label">AI 判定</span>
+          <span class="mod-ai-value tier">Tier-1 · 通过</span>
+          <span class="mod-confidence low">置信度 65%</span>
+          <span class="mod-ai-label">分类</span>
+          <span class="mod-ai-value">求助</span>
+        </div>
+        <div class="mod-actions">
+          <button class="mod-btn mod-btn-pass">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            通过
+          </button>
+          <button class="mod-btn mod-btn-reject">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+            拒绝
+          </button>
+          <button class="mod-btn mod-btn-ghost">详情</button>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

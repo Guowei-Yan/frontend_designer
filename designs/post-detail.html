@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>详情 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    /* ── Page Shell ──────────────────────────────────────────── */
+
+    .page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: var(--topbar-height) 0 calc(56px + env(safe-area-inset-bottom));
+    }
+
+    @media (max-width: 639px) {
+      .page-shell {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+
+    /* ── Detail Topbar ───────────────────────────────────────── */
+
+    .detail-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-height);
+      background: var(--surface);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+    }
+
+    .detail-topbar .btn-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center; justify-content: center;
+      color: var(--text-secondary);
+      transition: background 150ms ease;
+      flex-shrink: 0;
+    }
+
+    .detail-topbar .btn-icon:hover {
+      background: var(--interactive-ghost);
+      color: var(--text-primary);
+    }
+
+    .detail-topbar .btn-icon svg {
+      width: 20px; height: 20px;
+      stroke: currentColor; stroke-width: 2;
+      fill: none;
+    }
+
+    .detail-topbar-spacer {
+      width: 40px;
+      flex-shrink: 0;
+    }
+
+    /* ── Post Full ───────────────────────────────────────────── */
+
+    .post-full {
+      position: relative;
+      padding: 20px var(--content-px) 16px;
+    }
+
+    .post-full .post-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .post-full .post-body-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+
+    .post-full .post-body-text p + p {
+      margin-top: 16px;
+    }
+
+    .post-full .post-category-row {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Interaction Toolbar ─────────────────────────────────── */
+
+    .interaction-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 12px var(--content-px);
+      border-top: 1px solid var(--divider);
+      border-bottom: 1px solid var(--divider);
+      margin: 0;
+    }
+
+    .toolbar-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      padding: 6px 16px;
+      border-radius: var(--r-md);
+      transition: background 150ms ease, color 150ms ease;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      flex: 1;
+      justify-content: center;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--interactive-ghost);
+    }
+
+    .toolbar-btn svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; stroke-width: 1.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .toolbar-btn.liked {
+      color: var(--cat-help);
+    }
+
+    .toolbar-btn.liked svg {
+      fill: var(--cat-help);
+      stroke: var(--cat-help);
+    }
+
+    /* ── Reply Section ───────────────────────────────────────── */
+
+    .reply-section {
+      padding: 24px var(--content-px) 0;
+    }
+
+    .reply-header {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .reply-header::before,
+    .reply-header::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider);
+    }
+
+    /* ── Accepted Answer ─────────────────────────────────────── */
+
+    .accepted-answer {
+      background: rgba(90, 138, 106, 0.06);
+      border-radius: var(--r-md);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    [data-theme="dark"] .accepted-answer {
+      background: rgba(111, 160, 126, 0.08);
+    }
+
+    .accepted-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--success);
+      margin-bottom: 12px;
+    }
+
+    .accepted-label svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; stroke-width: 2.5;
+      fill: none;
+    }
+
+    /* ── Reply Item ──────────────────────────────────────────── */
+
+    .reply-item {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .reply-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .reply-author-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .reply-meta {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .reply-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reply-name .op-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 5px;
+      border-radius: var(--r-xs);
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--cat-help);
+      margin-left: 4px;
+      vertical-align: middle;
+      line-height: 1.4;
+    }
+
+    .reply-time {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .reply-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      padding-left: 36px;
+    }
+
+    .reply-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-left: 36px;
+    }
+
+    .reply-action {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      padding: 2px 4px;
+      border-radius: var(--r-xs);
+      transition: color 150ms ease;
+    }
+
+    .reply-action:hover {
+      color: var(--text-secondary);
+    }
+
+    .reply-action svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; stroke-width: 1.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* ── Sub-replies ─────────────────────────────────────────── */
+
+    .sub-replies {
+      margin-top: 12px;
+      margin-left: 36px;
+      padding-left: 16px;
+      border-left: 1px solid var(--divider);
+    }
+
+    .sub-reply-item {
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--divider);
+    }
+
+    .sub-reply-item:last-child {
+      border-bottom: none;
+    }
+
+    .sub-reply-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .sub-reply-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .sub-reply-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      padding-left: 26px;
+    }
+
+    .sub-reply-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: auto;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .sub-reply-collapse {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      transition: color 150ms ease;
+    }
+
+    .sub-reply-collapse:hover {
+      color: var(--text-secondary);
+    }
+
+    .sub-reply-collapse::before,
+    .sub-reply-collapse::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider);
+    }
+
+    /* ── Bottom Reply Bar ────────────────────────────────────── */
+
+    .reply-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface-raised);
+      border-top: 1px solid var(--divider);
+      padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 90;
+    }
+
+    .reply-bar-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+    }
+
+    .reply-bar-input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .reply-bar-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: var(--r-full);
+      border: 1px solid var(--divider-medium);
+      background: var(--surface);
+      font-size: 15px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+
+    .reply-bar-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .reply-bar-input:focus {
+      border-color: var(--interactive);
+    }
+
+    .reply-bar-send {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      flex-shrink: 0;
+      padding: 4px 2px;
+      transition: color 150ms ease;
+    }
+
+    .reply-bar-send.active {
+      color: var(--interactive);
+    }
+
+    /* ── Empty Reply State ───────────────────────────────────── */
+
+    .reply-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .reply-empty svg {
+      width: 48px; height: 48px;
+      stroke: var(--text-muted); stroke-width: 1.5;
+      fill: none;
+      margin-bottom: 12px;
+    }
+
+    .reply-empty p {
+      font-size: 14px;
+    }
+
+    /* ── Mobile Bottom Nav Hide ──────────────────────────────── */
+
+    .page-detail .bottom-nav {
+      display: none;
+    }
+
+    /* ── Super Short Screen ──────────────────────────────────── */
+
+    @media (max-height: 500px) {
+      .reply-bar {
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+      .reply-bar-input {
+        height: 36px;
+      }
+    }
+
+  </style>
+</head>
+<body class="page-detail">
+
+  <!-- ══════════════════════════════════════════════════════════
+       DETAIL TOPBAR
+  ══════════════════════════════════════════════════════════ -->
+  <header class="detail-topbar">
+    <button class="btn-icon" aria-label="返回">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <button class="btn-icon" aria-label="更多">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </header>
+
+
+  <div class="page-shell">
+
+    <!-- ══════════════════════════════════════════════════════════
+         POST FULL
+    ══════════════════════════════════════════════════════════ -->
+    <article class="post-full">
+      <div class="post-aura"></div>
+      <div class="post-inner">
+
+        <div class="post-author-row">
+          <div class="avatar av-28 av-wealthy">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+            "></div>
+          </div>
+          <div class="author-info">
+            <span class="author-name">老王</span>
+            <span class="author-sep">·</span>
+            <span class="author-level">富农</span>
+          </div>
+          <span class="post-time">23 分钟前</span>
+        </div>
+
+        <h1 class="post-title">厨房下水堵了三天了，求推荐靠谱的管道工</h1>
+
+        <div class="post-body-text">
+          <p>试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！</p>
+          <p>有没有之前找过师傅的朋友能推荐一下？最好在 North Perth 附近，能上门的那种。预算不是问题，关键是靠谱，之前被放鸽子太多次了。</p>
+        </div>
+
+        <div class="post-category-row">
+          <span class="category-mark cm-help">求助</span>
+        </div>
+
+      </div>
+    </article>
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         INTERACTION TOOLBAR
+    ══════════════════════════════════════════════════════════ -->
+    <div class="interaction-toolbar">
+      <button class="toolbar-btn liked">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        12
+      </button>
+      <button class="toolbar-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        回复
+      </button>
+      <button class="toolbar-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        分享
+      </button>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         REPLY SECTION
+    ══════════════════════════════════════════════════════════ -->
+    <section class="reply-section">
+
+      <!-- Accepted Answer -->
+      <div class="accepted-answer">
+        <div class="accepted-label">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          楼主采纳的回答
+        </div>
+        <div class="reply-item" style="padding-bottom: 0; margin-bottom: 0; border-bottom: none;">
+          <div class="reply-author-row">
+            <div class="avatar av-28 av-middle">
+              <div class="avatar-img" style="
+                background: linear-gradient(135deg, #9CBFAA 0%, #6A9A7A 100%);
+              "></div>
+            </div>
+            <div class="reply-meta">
+              <span class="reply-name">小李 · 中农</span>
+            </div>
+            <span class="reply-time">22 分钟前</span>
+          </div>
+          <div class="reply-text">
+            我之前找过一位在 North Perth 的师傅，叫老张水管，电话 04xx xxx xxx。上次我家厨房堵了，他半小时就到，疏通加检查一共收了 $120，还帮忙看了下水管老化问题。可以试试看，他一般晚上也接单。
+          </div>
+          <div class="reply-actions">
+            <button class="reply-action">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              8
+            </button>
+            <button class="reply-action">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polyline points="9 17 4 12 9 7"/>
+                <path d="M20 18v-2a4 4 0 0 0-4-4H4"/>
+              </svg>
+              回复
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="reply-header">全部 5 条回复</div>
+
+      <!-- Reply 1 -->
+      <div class="reply-item">
+        <div class="reply-author-row">
+          <div class="avatar av-28 av-middle">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #D4AA70 0%, #B8893A 100%);
+            "></div>
+          </div>
+          <div class="reply-meta">
+            <span class="reply-name">吃货联盟<span class="op-badge">楼主</span></span>
+          </div>
+          <span class="reply-time">20 分钟前</span>
+        </div>
+        <div class="reply-text">
+          谢谢推荐！已经联系上了，师傅说一小时后到，希望能搞定 🙏
+        </div>
+        <div class="reply-actions">
+          <button class="reply-action">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            3
+          </button>
+          <button class="reply-action">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="9 17 4 12 9 7"/>
+              <path d="M20 18v-2a4 4 0 0 0-4-4H4"/>
+            </svg>
+            回复
+          </button>
+        </div>
+
+        <!-- Sub-replies -->
+        <div class="sub-replies">
+          <div class="sub-reply-item">
+            <div class="sub-reply-author">
+              <div class="avatar av-20">
+                <div class="avatar-img" style="
+                  background: linear-gradient(135deg, #9CBFAA 0%, #6A9A7A 100%);
+                "></div>
+              </div>
+              <span class="sub-reply-name">小李</span>
+              <span class="sub-reply-time">18 分钟前</span>
+            </div>
+            <div class="sub-reply-text">
+              不客气！修好了记得来更新一下，方便以后其他人参考。
+            </div>
+          </div>
+          <div class="sub-reply-item">
+            <div class="sub-reply-author">
+              <div class="avatar av-20">
+                <div class="avatar-img" style="
+                  background: linear-gradient(135deg, #D4AA70 0%, #B8893A 100%);
+                "></div>
+              </div>
+              <span class="sub-reply-name">吃货联盟</span>
+              <span class="sub-reply-time">15 分钟前</span>
+            </div>
+            <div class="sub-reply-text">
+              一定！已经加急标记了。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reply 2 -->
+      <div class="reply-item">
+        <div class="reply-author-row">
+          <div class="avatar av-28">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #BEB8B0 0%, #908A84 100%);
+            "></div>
+          </div>
+          <div class="reply-meta">
+            <span class="reply-name">阿珍 · 贫农</span>
+          </div>
+          <span class="reply-time">10 分钟前</span>
+        </div>
+        <div class="reply-text">
+          同求，我家浴室也堵了……蹲一个后续
+        </div>
+        <div class="reply-actions">
+          <button class="reply-action">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            1
+          </button>
+          <button class="reply-action">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="9 17 4 12 9 7"/>
+              <path d="M20 18v-2a4 4 0 0 0-4-4H4"/>
+            </svg>
+            回复
+          </button>
+        </div>
+      </div>
+
+      <!-- Reply 3 with collapsed sub-replies -->
+      <div class="reply-item">
+        <div class="reply-author-row">
+          <div class="avatar av-28 av-landlord">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #DDB870 0%, #C09040 100%);
+            "></div>
+          </div>
+          <div class="reply-meta">
+            <span class="reply-name">老张 · 地主</span>
+          </div>
+          <span class="reply-time">5 分钟前</span>
+        </div>
+        <div class="reply-text">
+          其实如果只是厨房下水堵，可以先试试把 U 型管拆下来清洗，很多时候是油脂堆积。我之前发过一个教程贴可以参考。
+        </div>
+        <div class="reply-actions">
+          <button class="reply-action">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            5
+          </button>
+          <button class="reply-action">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="9 17 4 12 9 7"/>
+              <path d="M20 18v-2a4 4 0 0 0-4-4H4"/>
+            </svg>
+            回复
+          </button>
+        </div>
+
+        <div class="sub-replies">
+          <button class="sub-reply-collapse">查看其余 4 条对话</button>
+          <div class="sub-reply-item">
+            <div class="sub-reply-author">
+              <div class="avatar av-20">
+                <div class="avatar-img" style="
+                  background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+                "></div>
+              </div>
+              <span class="sub-reply-name">老王</span>
+              <span class="sub-reply-time">4 分钟前</span>
+            </div>
+            <div class="sub-reply-text">
+              试过拆 U 型管了，里面全是硬化的油脂，根本清不动 😂
+            </div>
+          </div>
+          <div class="sub-reply-item">
+            <div class="sub-reply-author">
+              <div class="avatar av-20">
+                <div class="avatar-img" style="
+                  background: linear-gradient(135deg, #DDB870 0%, #C09040 100%);
+                "></div>
+              </div>
+              <span class="sub-reply-name">老张</span>
+              <span class="sub-reply-time">3 分钟前</span>
+            </div>
+            <div class="sub-reply-text">
+              那确实得上专业工具了，师傅带高压水枪的话几分钟就能冲开。
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Bottom spacing for reply bar -->
+    <div style="height: 60px;"></div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       BOTTOM REPLY BAR
+  ══════════════════════════════════════════════════════════ -->
+  <div class="reply-bar">
+    <div class="reply-bar-avatar"></div>
+    <div class="reply-bar-input-wrap">
+      <input type="text" class="reply-bar-input" placeholder="写点什么..." />
+    </div>
+    <button class="reply-bar-send">发送</button>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       THEME SYNC
+  ══════════════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute(
+          'data-theme',
+          theme === 'dark' ? 'dark' : 'light'
+        );
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') {
+          applyTheme(e.data.theme);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>激活账号 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--surface);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .auth-icon {
+      width: 48px; height: 48px;
+      margin: 0 auto 20px;
+      stroke: var(--interactive);
+      stroke-width: 1.5;
+      fill: none;
+    }
+
+    .auth-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+
+    .auth-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    .code-target {
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+    /* ── Code Input Boxes ────────────────────────────────────── */
+
+    .code-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .code-box {
+      width: 48px;
+      height: 56px;
+      border-radius: var(--r-md);
+      border: 1.5px solid var(--divider-medium);
+      background: var(--surface-raised);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      font-family: var(--font-body);
+      outline: none;
+      caret-color: var(--interactive);
+      transition: border-color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+    }
+
+    .code-box:focus {
+      border-color: var(--interactive);
+      box-shadow: 0 0 0 3px var(--interactive-ghost);
+    }
+
+    .code-box.filled {
+      border-color: var(--interactive);
+      border-width: 1.5px;
+    }
+
+    .code-box.pulse {
+      animation: codePulse 100ms ease;
+    }
+
+    @keyframes codePulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* ── Resend Link ─────────────────────────────────────────── */
+
+    .resend-wrap {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .resend-link {
+      color: var(--interactive);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 0;
+    }
+
+    .resend-link:hover {
+      text-decoration: underline;
+    }
+
+    .resend-link:disabled {
+      color: var(--text-muted);
+      cursor: default;
+      text-decoration: none;
+    }
+
+    /* ── Super Narrow Screens ────────────────────────────────── */
+
+    @media (max-width: 359px) {
+      .auth-page { padding: 16px; }
+      .code-boxes { gap: 6px; }
+      .code-box { width: 40px; height: 48px; font-size: 20px; }
+    }
+
+    @media (max-height: 500px) {
+      .auth-icon { width: 40px; height: 40px; margin-bottom: 12px; }
+      .auth-subtitle { margin-bottom: 20px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <svg class="auth-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+
+      <div class="auth-title">验证码已发送</div>
+      <div class="auth-subtitle">
+        请查看邮箱<br><span class="code-target">hello@example.com</span>
+      </div>
+
+      <div class="code-boxes">
+        <input type="text" inputmode="numeric" maxlength="1" class="code-box" />
+        <input type="text" inputmode="numeric" maxlength="1" class="code-box" />
+        <input type="text" inputmode="numeric" maxlength="1" class="code-box" />
+        <input type="text" inputmode="numeric" maxlength="1" class="code-box" />
+        <input type="text" inputmode="numeric" maxlength="1" class="code-box" />
+        <input type="text" inputmode="numeric" maxlength="1" class="code-box" />
+      </div>
+
+      <div class="resend-wrap">
+        没收到？<button class="resend-link" disabled>重新发送 (52s)</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+
+      // Code input behavior
+      const boxes = document.querySelectorAll('.code-box');
+      boxes.forEach((box, i) => {
+        box.addEventListener('input', (e) => {
+          const val = e.target.value.replace(/\D/g, '').slice(0, 1);
+          e.target.value = val;
+          if (val) {
+            e.target.classList.add('filled', 'pulse');
+            setTimeout(() => e.target.classList.remove('pulse'), 100);
+            if (i < boxes.length - 1) boxes[i + 1].focus();
+          } else {
+            e.target.classList.remove('filled');
+          }
+        });
+        box.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !box.value && i > 0) {
+            boxes[i - 1].focus();
+          }
+        });
+        box.addEventListener('focus', () => {
+          box.select();
+        });
+      });
+      if (boxes.length) boxes[0].focus();
+    })();
+  </script>
+
+</body>
+</html>

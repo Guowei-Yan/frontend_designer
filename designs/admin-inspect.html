@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容审查 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+      background: var(--surface);
+    }
+
+    .admin-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--surface-raised);
+      border-right: 1px solid var(--divider);
+      padding: 24px 0;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .admin-sidebar::-webkit-scrollbar { display: none; }
+    .admin-sidebar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .admin-sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--divider);
+      margin-bottom: 16px;
+    }
+
+    .admin-sidebar-brand .brand-stamp {
+      width: 28px; height: 28px;
+      font-size: 14px;
+      border-radius: var(--r-sm);
+    }
+
+    .admin-sidebar-brand .brand-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .admin-sidebar-brand .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .admin-nav {
+      padding: 0 12px;
+    }
+
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--r-md);
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+      margin-bottom: 2px;
+      border: none;
+      background: none;
+      width: 100%;
+      font-family: var(--font-body);
+      text-align: left;
+    }
+
+    .admin-nav-item:hover {
+      background: var(--interactive-ghost);
+      color: var(--text-primary);
+    }
+
+    .admin-nav-item.active {
+      background: var(--interactive-ghost);
+      color: var(--interactive);
+      font-weight: 500;
+    }
+
+    .admin-nav-item svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; stroke-width: 1.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .admin-main {
+      flex: 1;
+      margin-left: 220px;
+      padding: 24px 32px 40px;
+      max-width: calc(1200px - 220px);
+    }
+
+    .admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .admin-page-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .admin-user:hover { background: var(--interactive-ghost); }
+
+    .admin-user-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ── Two-Column Inspector ────────────────────────────────── */
+
+    .inspect-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── Left: Content Preview ───────────────────────────────── */
+
+    .inspect-content {
+      background: var(--surface-raised);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--divider);
+      overflow: hidden;
+    }
+
+    .inspect-content .post-item {
+      margin: 0;
+      border: none;
+      border-radius: 0;
+    }
+
+    .inspect-content .post-aura {
+      border-radius: 0;
+    }
+
+    /* ── Right: Info Panels ──────────────────────────────────── */
+
+    .inspect-panels {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .inspect-panel {
+      background: var(--surface-raised);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--divider);
+      padding: 20px;
+    }
+
+    .inspect-panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+
+    .inspect-kv {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .inspect-kv-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .inspect-kv-key {
+      color: var(--text-muted);
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+
+    .inspect-kv-val {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .inspect-kv-val.pass { color: var(--success); }
+    .inspect-kv-val.fail { color: var(--danger); }
+
+    .inspect-dimension-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .inspect-dim {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: var(--surface);
+      border-radius: var(--r-sm);
+      font-size: 13px;
+    }
+
+    .inspect-dim-name {
+      color: var(--text-secondary);
+    }
+
+    .inspect-dim-status {
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .inspect-dim-status svg {
+      width: 14px; height: 14px;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .dim-pass { color: var(--success); }
+    .dim-pass svg { stroke: var(--success); }
+
+    .dim-fail { color: var(--danger); }
+    .dim-fail svg { stroke: var(--danger); }
+
+    .inspect-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inspect-btn {
+      width: 100%;
+      height: 40px;
+      border-radius: var(--r-md);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      border: none;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .inspect-btn:hover { opacity: 0.9; }
+
+    .inspect-btn svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; stroke-width: 2.5;
+      fill: none;
+    }
+
+    .inspect-btn-pass {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .inspect-btn-reject {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .inspect-btn-mute {
+      background: var(--warning);
+      color: var(--text-primary);
+    }
+
+    .inspect-btn-ban {
+      background: var(--surface);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    /* ── Version History ─────────────────────────────────────── */
+
+    .version-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .version-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--surface);
+      border-radius: var(--r-sm);
+      font-size: 13px;
+    }
+
+    .version-badge {
+      padding: 1px 6px;
+      border-radius: var(--r-xs);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .version-badge.pass {
+      background: rgba(90, 138, 106, 0.13);
+      color: var(--success);
+    }
+
+    .version-badge.pending {
+      background: rgba(184, 137, 58, 0.13);
+      color: var(--warning);
+    }
+
+    [data-theme="dark"] .version-badge.pass {
+      background: rgba(111, 160, 126, 0.18);
+    }
+
+    [data-theme="dark"] .version-badge.pending {
+      background: rgba(204, 170, 92, 0.18);
+    }
+
+    .version-time {
+      color: var(--text-muted);
+      margin-left: auto;
+      font-size: 12px;
+    }
+
+    /* ── Audit Log ───────────────────────────────────────────── */
+
+    .audit-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--divider);
+      font-size: 13px;
+    }
+
+    .audit-entry:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .audit-time {
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      width: 40px;
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .audit-body {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .audit-body .actor {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ── Mobile Warning ──────────────────────────────────────── */
+
+    .mobile-warning {
+      display: none;
+    }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+
+    @media (max-width: 1023px) {
+      .admin-sidebar { display: none; }
+      .admin-main { margin-left: 0; padding: 20px; max-width: none; }
+      .inspect-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .admin-main { padding: 16px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <div class="brand-stamp">P</div>
+        <div>
+          <div class="brand-text">Plan-Local</div>
+          <div class="brand-sub">管理后台</div>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          概览
+        </button>
+        <button class="admin-nav-item active">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          审核
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          拦截
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          用户
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          公告
+        </button>
+        <button class="admin-nav-item">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          设置
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+      <div class="admin-topbar">
+        <div class="admin-page-title">内容审查详情</div>
+        <div class="admin-user">
+          <div class="avatar av-28">
+            <div class="avatar-img" style="
+              background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+            "></div>
+          </div>
+          <span class="admin-user-name">老王</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="inspect-grid">
+
+        <!-- Left: Content -->
+        <div class="inspect-content">
+          <article class="post-item" data-category="help" data-solved="false" style="margin-top:0;">
+            <div class="post-aura"></div>
+            <div class="post-inner">
+              <div class="post-author-row">
+                <div class="avatar av-28 av-wealthy">
+                  <div class="avatar-img" style="
+                    background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+                  "></div>
+                </div>
+                <div class="author-info">
+                  <span class="author-name">老王</span>
+                  <span class="author-sep">·</span>
+                  <span class="author-level">富农</span>
+                </div>
+                <span class="post-time">23 分钟前</span>
+              </div>
+              <div class="post-body">
+                <h3 class="post-title">厨房下水堵了三天了，求推荐靠谱的管道工</h3>
+                <p class="post-text">试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！</p>
+                <p class="post-text">有没有之前找过师傅的朋友能推荐一下？最好在 North Perth 附近，能上门的那种。预算不是问题，关键是靠谱，之前被放鸽子太多次了。</p>
+              </div>
+              <div class="post-meta-row">
+                <span class="category-mark cm-help">求助</span>
+                <div class="post-interactions">
+                  <span class="interaction-item">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    12
+                  </span>
+                  <span class="interaction-item">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                    5
+                  </span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Right: Info Panels -->
+        <div class="inspect-panels">
+
+          <!-- AI Result -->
+          <div class="inspect-panel">
+            <div class="inspect-panel-title">AI 审核结果</div>
+            <div class="inspect-kv">
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">Tier</span>
+                <span class="inspect-kv-val">Tier-1（深度审核）</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">模型</span>
+                <span class="inspect-kv-val">GLM-5-Turbo</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">判定</span>
+                <span class="inspect-kv-val pass">通过</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">置信度</span>
+                <span class="inspect-kv-val">94%</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">耗时</span>
+                <span class="inspect-kv-val">4.2s</span>
+              </div>
+            </div>
+            <div class="inspect-panel-title" style="margin-top:16px; margin-bottom:10px; font-size:13px;">各维度检测</div>
+            <div class="inspect-dimension-list">
+              <div class="inspect-dim">
+                <span class="inspect-dim-name">政治风险</span>
+                <span class="inspect-dim-status dim-pass">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  通过
+                </span>
+              </div>
+              <div class="inspect-dim">
+                <span class="inspect-dim-name">色情内容</span>
+                <span class="inspect-dim-status dim-pass">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  通过
+                </span>
+              </div>
+              <div class="inspect-dim">
+                <span class="inspect-dim-name">诈骗广告</span>
+                <span class="inspect-dim-status dim-pass">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  通过
+                </span>
+              </div>
+              <div class="inspect-dim">
+                <span class="inspect-dim-name">地域歧视</span>
+                <span class="inspect-dim-status dim-pass">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  通过
+                </span>
+              </div>
+              <div class="inspect-dim">
+                <span class="inspect-dim-name">个人隐私</span>
+                <span class="inspect-dim-status dim-pass">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  通过
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Version History -->
+          <div class="inspect-panel">
+            <div class="inspect-panel-title">版本历史</div>
+            <div class="version-list">
+              <div class="version-item">
+                <span>v1</span>
+                <span class="version-badge pass">通过</span>
+                <span class="version-time">14:23</span>
+              </div>
+              <div class="version-item">
+                <span>v2</span>
+                <span class="version-badge pending">待审</span>
+                <span class="version-time">14:28</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Info -->
+          <div class="inspect-panel">
+            <div class="inspect-panel-title">用户信息</div>
+            <div class="inspect-kv">
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">昵称</span>
+                <span class="inspect-kv-val">老王</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">等级</span>
+                <span class="inspect-kv-val">富农</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">注册</span>
+                <span class="inspect-kv-val">2026-01-15</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">帖子</span>
+                <span class="inspect-kv-val">23</span>
+              </div>
+              <div class="inspect-kv-row">
+                <span class="inspect-kv-key">违规</span>
+                <span class="inspect-kv-val">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="inspect-panel">
+            <div class="inspect-panel-title">操作</div>
+            <div class="inspect-actions">
+              <button class="inspect-btn inspect-btn-pass">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                通过
+              </button>
+              <button class="inspect-btn inspect-btn-reject">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                拒绝
+              </button>
+              <button class="inspect-btn inspect-btn-mute">禁言</button>
+              <button class="inspect-btn inspect-btn-ban">封禁</button>
+            </div>
+          </div>
+
+          <!-- Audit Log -->
+          <div class="inspect-panel">
+            <div class="inspect-panel-title">审计日志</div>
+            <div class="audit-entry">
+              <span class="audit-time">14:23</span>
+              <div class="audit-body">
+                <span class="actor">AI Tier-1</span> 自动判定通过
+              </div>
+            </div>
+            <div class="audit-entry">
+              <span class="audit-time">14:23</span>
+              <div class="audit-body">
+                <span class="actor">老王</span> 发布帖子
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>发帖 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+
+    /* ── Page Shell ──────────────────────────────────────────── */
+
+    .page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: var(--topbar-height) 0 0;
+    }
+
+    @media (max-width: 639px) {
+      .page-shell {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+
+    /* ── Create Topbar ───────────────────────────────────────── */
+
+    .create-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-height);
+      background: var(--surface);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+    }
+
+    .create-topbar .btn-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      padding: 6px 4px;
+      border-radius: var(--r-xs);
+      transition: color 150ms ease;
+      flex-shrink: 0;
+    }
+
+    .create-topbar .btn-text:hover {
+      color: var(--text-primary);
+    }
+
+    .create-topbar .btn-publish {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: not-allowed;
+      font-family: var(--font-body);
+      padding: 6px 4px;
+      flex-shrink: 0;
+      transition: color 150ms ease;
+    }
+
+    .create-topbar .btn-publish.active {
+      color: var(--interactive);
+      cursor: pointer;
+    }
+
+    /* ── Create Form ─────────────────────────────────────────── */
+
+    .create-form {
+      padding: 16px var(--content-px) 24px;
+    }
+
+    /* ── Tag Suggestion ──────────────────────────────────────── */
+
+    .tag-suggestion {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      min-height: 28px;
+    }
+
+    .tag-suggestion-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .tag-suggestion-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: var(--r-md);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-body);
+      transition: transform 150ms ease, opacity 200ms ease;
+      animation: tagFadeIn 200ms ease-out;
+    }
+
+    @keyframes tagFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .tag-suggestion-pill:hover {
+      transform: scale(1.04);
+    }
+
+    .tag-pill-help      { color: var(--cat-help);      background: rgba(199, 91,  58,  0.13); }
+    .tag-pill-recommend { color: var(--cat-recommend); background: rgba(90,  138, 106, 0.13); }
+    .tag-pill-event     { color: var(--cat-event);     background: rgba(184, 137, 58,  0.13); }
+    .tag-pill-chat      { color: var(--cat-chat);      background: rgba(138, 132, 128, 0.13); }
+
+    [data-theme="dark"] .tag-pill-help      { background: rgba(212, 114, 79,  0.18); }
+    [data-theme="dark"] .tag-pill-recommend { background: rgba(111, 160, 126, 0.18); }
+    [data-theme="dark"] .tag-pill-event     { background: rgba(204, 170, 92,  0.18); }
+    [data-theme="dark"] .tag-pill-chat      { background: rgba(122, 116, 112, 0.18); }
+
+    /* ── Title Input ─────────────────────────────────────────── */
+
+    .title-input-wrap {
+      margin-bottom: 8px;
+    }
+
+    .title-input {
+      width: 100%;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-primary);
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--divider);
+      padding: 8px 0 12px;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+
+    .title-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .title-input:focus {
+      border-color: var(--interactive);
+    }
+
+    .title-hint {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      min-height: 16px;
+    }
+
+    .title-hint.warn {
+      color: var(--warning);
+    }
+
+    /* ── Body Input ──────────────────────────────────────────── */
+
+    .body-input-wrap {
+      margin-bottom: 16px;
+    }
+
+    .body-input {
+      width: 100%;
+      min-height: 160px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: none;
+      border: none;
+      padding: 8px 0;
+      font-family: var(--font-body);
+      outline: none;
+      resize: none;
+    }
+
+    .body-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    /* ── Media Thumbnails ────────────────────────────────────── */
+
+    .media-thumbs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 12px;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .media-thumbs::-webkit-scrollbar { display: none; }
+
+    .thumb-cell {
+      width: 64px; height: 64px;
+      border-radius: var(--r-sm);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .thumb-cell .thumb-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb-remove {
+      position: absolute;
+      top: 2px; right: 2px;
+      width: 18px; height: 18px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .thumb-add {
+      width: 64px; height: 64px;
+      border-radius: var(--r-sm);
+      border: 1.5px dashed var(--divider-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      cursor: pointer;
+      background: none;
+      transition: border-color 150ms ease, color 150ms ease;
+    }
+
+    .thumb-add:hover {
+      border-color: var(--interactive);
+      color: var(--interactive);
+    }
+
+    .thumb-add svg {
+      width: 20px; height: 20px;
+      stroke: currentColor; stroke-width: 2;
+      fill: none;
+    }
+
+    .media-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── Toolbar ─────────────────────────────────────────────── */
+
+    .create-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--divider);
+    }
+
+    .toolbar-icon-btn {
+      width: 40px; height: 40px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+    }
+
+    .toolbar-icon-btn:hover {
+      background: var(--interactive-ghost);
+      color: var(--text-primary);
+    }
+
+    .toolbar-icon-btn svg {
+      width: 20px; height: 20px;
+      stroke: currentColor; stroke-width: 1.5;
+      fill: none;
+    }
+
+    /* ── Preview Section ─────────────────────────────────────── */
+
+    .preview-section {
+      padding: 24px var(--content-px);
+      border-top: 1px solid var(--divider);
+    }
+
+    .preview-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .preview-card {
+      border: 1px solid var(--divider);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+
+    .preview-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* ── Super Narrow / Short Screens ────────────────────────── */
+
+    @media (max-width: 359px) {
+      .create-form { padding: 12px; }
+      .title-input { font-size: 16px; }
+    }
+
+    @media (max-height: 500px) {
+      .body-input { min-height: 80px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CREATE TOPBAR
+  ══════════════════════════════════════════════════════════ -->
+  <header class="create-topbar">
+    <button class="btn-text">取消</button>
+    <button class="btn-publish active">发布</button>
+  </header>
+
+
+  <div class="page-shell">
+
+    <!-- ══════════════════════════════════════════════════════════
+         CREATE FORM
+    ══════════════════════════════════════════════════════════ -->
+    <div class="create-form">
+
+      <!-- AI Tag Suggestion -->
+      <div class="tag-suggestion">
+        <span class="tag-suggestion-label">AI 建议分类</span>
+        <button class="tag-suggestion-pill tag-pill-help">求助</button>
+      </div>
+
+      <!-- Title -->
+      <div class="title-input-wrap">
+        <input
+          type="text"
+          class="title-input"
+          placeholder="标题"
+          value="厨房下水堵了三天了，求推荐靠谱的管道工"
+          maxlength="60"
+        />
+        <div class="title-hint">28 / 60</div>
+      </div>
+
+      <!-- Body -->
+      <div class="body-input-wrap">
+        <textarea
+          class="body-input"
+          placeholder="说点什么..."
+        >试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！
+
+有没有之前找过师傅的朋友能推荐一下？最好在 North Perth 附近，能上门的那种。预算不是问题，关键是靠谱，之前被放鸽子太多次了。</textarea>
+      </div>
+
+      <!-- Media Thumbnails -->
+      <div class="media-thumbs">
+        <div class="thumb-cell" style="background: linear-gradient(160deg, #C4884A 0%, #8A4820 60%, #E8C090 100%);">
+          <button class="thumb-remove">×</button>
+        </div>
+        <div class="thumb-cell" style="background: linear-gradient(150deg, #7BC0E8 0%, #70A060 45%, #90B870 100%);">
+          <button class="thumb-remove">×</button>
+        </div>
+        <button class="thumb-add">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5"  y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="media-count">2 / 16</div>
+
+      <!-- Toolbar -->
+      <div class="create-toolbar">
+        <button class="toolbar-icon-btn" title="添加图片">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="M21 15l-5-5L5 21"/>
+          </svg>
+        </button>
+        <button class="toolbar-icon-btn" title="添加视频">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="2"/>
+            <polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════════
+         PREVIEW
+    ══════════════════════════════════════════════════════════ -->
+    <div class="preview-section">
+      <div class="preview-label">你的帖子将这样出现在社区中：</div>
+
+      <div class="preview-card">
+        <article class="post-item" data-category="help" data-solved="false" style="margin-top:0;">
+          <div class="post-aura"></div>
+          <div class="post-inner">
+
+            <div class="post-author-row">
+              <div class="avatar av-28 av-wealthy">
+                <div class="avatar-img" style="
+                  background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);
+                "></div>
+              </div>
+              <div class="author-info">
+                <span class="author-name">老王</span>
+                <span class="author-sep">·</span>
+                <span class="author-level">富农</span>
+              </div>
+              <span class="post-time">刚刚</span>
+            </div>
+
+            <div class="post-body">
+              <h3 class="post-title">厨房下水堵了三天了，求推荐靠谱的管道工</h3>
+              <div class="post-excerpt-fade">
+                试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！
+              </div>
+            </div>
+
+            <div class="post-meta-row">
+              <span class="category-mark cm-help">求助</span>
+              <div class="post-interactions">
+                <span class="interaction-item">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  0
+                </span>
+                <span class="interaction-item">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                  </svg>
+                  0
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </article>
+      </div>
+
+      <div class="preview-hint">修改将重新检查，检查通过前显示原版本</div>
+    </div>
+
+    <div style="height: 40px;"></div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       THEME SYNC
+  ══════════════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute(
+          'data-theme',
+          theme === 'dark' ? 'dark' : 'light'
+        );
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') {
+          applyTheme(e.data.theme);
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,8 +1,12 @@
 [
-  {
-    "index": 1,
-    "title": "Feed",
-    "description": "主 Feed 页面。含求助(呼吸色晕)/推荐(单图)/活动(官方置顶)/闲聊(拔河投票)/已解决/审核中 八种帖子状态。响应式：>1024px 双栏含侧边栏，<640px 移动端底栏。主题跟随 design-view 切换。",
-    "filePath": "feed.html"
-  }
+  { "index": 1, "title": "Feed", "description": "Community feed with posts, skeletons, empty states", "filePath": "feed.html" },
+  { "index": 2, "title": "Post Detail", "description": "Full post detail with replies, interactions, status variants", "filePath": "post-detail.html" },
+  { "index": 3, "title": "Create Post", "description": "Create post panel with tag suggestion and preview", "filePath": "post-create.html" },
+  { "index": 4, "title": "Login", "description": "Login page", "filePath": "login.html" },
+  { "index": 5, "title": "Register", "description": "Registration page", "filePath": "register.html" },
+  { "index": 6, "title": "Activate", "description": "6-digit activation code", "filePath": "activate.html" },
+  { "index": 7, "title": "Welcome", "description": "Welcome / set nickname", "filePath": "welcome.html" },
+  { "index": 8, "title": "Admin Overview", "description": "Admin dashboard overview", "filePath": "admin-overview.html" },
+  { "index": 9, "title": "Admin Moderation", "description": "Moderation queue", "filePath": "admin-moderation.html" },
+  { "index": 10, "title": "Admin Inspect", "description": "Content inspection detail", "filePath": "admin-inspect.html" }
 ]
