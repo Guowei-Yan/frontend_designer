@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Detail — Pending Review</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: var(--topbar-height) 0 calc(56px + env(safe-area-inset-bottom));
+    }
+    @media (max-width: 639px) {
+      .page-shell { padding-left: 0; padding-right: 0; }
+    }
+    .detail-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-height);
+      background: var(--surface);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+    }
+    .detail-topbar .btn-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center; justify-content: center;
+      color: var(--text-secondary);
+      transition: background 150ms ease;
+      flex-shrink: 0;
+    }
+    .detail-topbar .btn-icon:hover {
+      background: var(--interactive-ghost);
+      color: var(--text-primary);
+    }
+    .detail-topbar .btn-icon svg {
+      width: 20px; height: 20px;
+      stroke: currentColor; stroke-width: 2;
+      fill: none;
+    }
+    .post-full {
+      position: relative;
+      padding: 20px var(--content-px) 16px;
+    }
+    .post-full .post-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .post-full .post-body-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .post-full .post-body-text p + p { margin-top: 16px; }
+    .post-full .post-category-row {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .interaction-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 12px var(--content-px);
+      border-top: 1px solid var(--divider);
+      border-bottom: 1px solid var(--divider);
+      margin: 0;
+    }
+    .toolbar-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      padding: 6px 16px;
+      border-radius: var(--r-md);
+      transition: background 150ms ease, color 150ms ease;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      flex: 1;
+      justify-content: center;
+    }
+    .toolbar-btn:hover { background: var(--interactive-ghost); }
+    .toolbar-btn svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; stroke-width: 1.5;
+      fill: none;
+      flex-shrink: 0;
+    }
+    .reply-section { padding: 24px var(--content-px) 0; }
+    .reply-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .reply-empty svg {
+      width: 48px; height: 48px;
+      stroke: var(--text-muted); stroke-width: 1.5;
+      fill: none;
+      margin-bottom: 12px;
+    }
+    .reply-empty p { font-size: 14px; }
+    .reply-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--surface-raised);
+      border-top: 1px solid var(--divider);
+      padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 90;
+    }
+    .reply-bar-input {
+      flex: 1;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: var(--r-full);
+      border: 1px solid var(--divider-medium);
+      background: var(--surface);
+      font-size: 15px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      outline: none;
+    }
+    .reply-bar-input::placeholder { color: var(--text-muted); }
+    .reply-bar-send {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      flex-shrink: 0;
+      padding: 4px 2px;
+    }
+    .page-detail .bottom-nav { display: none; }
+  </style>
+</head>
+<body class="page-detail">
+
+  <header class="detail-topbar">
+    <button class="btn-icon" aria-label="返回">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="btn-icon" aria-label="更多">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="page-shell">
+
+    <!-- Status Banner -->
+    <div style="padding: 12px var(--content-px) 0;">
+      <div style="padding: 12px 16px; background: var(--surface-raised); border-radius: var(--r-md); border: 1px solid var(--divider);">
+        <div style="font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 14px;">⏳</span>
+          <span><strong style="color: var(--text-primary);">安全检查中</strong> — 审核通过后其他人可见</span>
+        </div>
+      </div>
+    </div>
+
+    <article class="post-full" style="opacity: 0.70;">
+      <div class="post-aura"></div>
+      <div class="post-inner">
+        <div class="post-author-row">
+          <div class="avatar av-28">
+            <div class="avatar-img" style="background: linear-gradient(135deg, #BEB8B0 0%, #908A84 100%);"></div>
+          </div>
+          <div class="author-info">
+            <span class="author-name">阿珍</span>
+            <span class="author-sep">·</span>
+            <span class="author-level">贫农</span>
+          </div>
+          <span class="post-time">刚刚</span>
+        </div>
+        <h1 class="post-title">有人知道 Joondalup 附近哪里可以修锁吗？</h1>
+        <div class="post-body-text">
+          <p>钥匙断在锁里了，现在出不了门，急需帮助。</p>
+        </div>
+        <div class="post-category-row">
+          <span class="category-mark cm-help">求助</span>
+        </div>
+      </div>
+    </article>
+
+    <div class="interaction-toolbar">
+      <button class="toolbar-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        0
+      </button>
+      <button class="toolbar-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        回复
+      </button>
+      <button class="toolbar-btn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        分享
+      </button>
+    </div>
+
+    <section class="reply-section">
+      <div class="reply-empty">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <p>等你来开启第一段对话</p>
+      </div>
+    </section>
+
+    <div style="height: 60px;"></div>
+  </div>
+
+  <div class="reply-bar">
+    <input type="text" class="reply-bar-input" placeholder="写点什么..." />
+    <button class="reply-bar-send">发送</button>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

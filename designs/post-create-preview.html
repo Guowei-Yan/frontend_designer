@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Post Preview — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: var(--topbar-height) 0 0;
+    }
+    @media (max-width: 639px) {
+      .page-shell { padding-left: 0; padding-right: 0; }
+    }
+    .preview-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-height);
+      background: var(--surface);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+    }
+    .preview-topbar .btn-back {
+      font-size: 15px;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      padding: 6px 4px;
+      border-radius: var(--r-xs);
+      transition: color 150ms ease;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .preview-topbar .btn-back:hover { color: var(--text-primary); }
+    .preview-topbar .btn-confirm {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--interactive);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      padding: 8px 20px;
+      border-radius: var(--r-md);
+      flex-shrink: 0;
+      transition: background 150ms ease;
+    }
+    .preview-topbar .btn-confirm:hover { background: var(--interactive-hover); }
+    .preview-hint {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-align: center;
+      padding: 24px var(--content-px) 20px;
+    }
+    .preview-card-wrap {
+      padding: 0 var(--content-px);
+    }
+    .preview-card {
+      background: var(--surface-raised);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--divider);
+      overflow: hidden;
+    }
+    .preview-footer {
+      text-align: center;
+      padding: 12px var(--content-px) 40px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="preview-topbar">
+    <button class="btn-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      继续编辑
+    </button>
+    <button class="btn-confirm">确认发布</button>
+  </header>
+
+  <div class="page-shell">
+    <div class="preview-hint">你的帖子将这样出现在社区中：</div>
+
+    <div class="preview-card-wrap">
+      <div class="preview-card">
+        <article class="post-item" data-category="help" data-solved="false" style="margin: 0; border: none; border-radius: 0;">
+          <div class="post-aura" style="border-radius: 0;"></div>
+          <div class="post-inner">
+            <div class="post-author-row">
+              <div class="avatar av-28 av-wealthy">
+                <div class="avatar-img" style="background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);"></div>
+              </div>
+              <div class="author-info">
+                <span class="author-name">老王</span>
+                <span class="author-sep">·</span>
+                <span class="author-level">富农</span>
+              </div>
+              <span class="post-time">刚刚</span>
+            </div>
+            <div class="post-body">
+              <h3 class="post-title">厨房下水堵了三天了，求推荐靠谱的管道工</h3>
+              <div class="post-excerpt-fade">
+                试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！
+              </div>
+            </div>
+            <div class="post-meta-row">
+              <span class="category-mark cm-help">求助</span>
+              <div class="post-interactions">
+                <span class="interaction-item">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  0
+                </span>
+                <span class="interaction-item">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  0
+                </span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="preview-footer">修改将重新检查，检查通过前显示原版本</div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

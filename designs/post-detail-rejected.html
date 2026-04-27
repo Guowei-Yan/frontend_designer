@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Detail — Rejected</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-shell {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: var(--topbar-height) 0 calc(56px + env(safe-area-inset-bottom));
+    }
+    @media (max-width: 639px) {
+      .page-shell { padding-left: 0; padding-right: 0; }
+    }
+    .detail-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--topbar-height);
+      background: var(--surface);
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+    }
+    .detail-topbar .btn-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center; justify-content: center;
+      color: var(--text-secondary);
+      transition: background 150ms ease;
+      flex-shrink: 0;
+    }
+    .detail-topbar .btn-icon:hover {
+      background: var(--interactive-ghost);
+      color: var(--text-primary);
+    }
+    .detail-topbar .btn-icon svg {
+      width: 20px; height: 20px;
+      stroke: currentColor; stroke-width: 2;
+      fill: none;
+    }
+    .post-full {
+      position: relative;
+      padding: 20px var(--content-px) 16px;
+      background: rgba(199, 91, 58, 0.02);
+    }
+    .post-full .post-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .post-full .post-body-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+    .post-full .post-body-text p + p { margin-top: 16px; }
+    .post-full .post-category-row {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-detail .bottom-nav { display: none; }
+  </style>
+</head>
+<body class="page-detail">
+
+  <header class="detail-topbar">
+    <button class="btn-icon" aria-label="返回">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="btn-icon" aria-label="更多">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="page-shell">
+
+    <div style="padding: 12px var(--content-px) 0;">
+      <div style="padding: 16px; background: rgba(199, 91, 58, 0.04); border-radius: var(--r-md); border: 1px solid rgba(199, 91, 58, 0.12);">
+        <div style="font-size: 14px; color: var(--danger); font-weight: 600; margin-bottom: 6px;">内容未通过安全检查</div>
+        <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">你的帖子涉嫌违规广告，已被拦截。你可以查看详情并申诉。</div>
+        <a href="#" style="font-size: 13px; color: var(--interactive); font-weight: 500; text-decoration: none;">查看详情 →</a>
+      </div>
+    </div>
+
+    <article class="post-full" style="opacity: 0.60;">
+      <div class="post-aura"></div>
+      <div class="post-inner">
+        <div class="post-author-row">
+          <div class="avatar av-28">
+            <div class="avatar-img" style="background: linear-gradient(135deg, #BEB8B0 0%, #908A84 100%);"></div>
+          </div>
+          <div class="author-info">
+            <span class="author-name">阿珍</span>
+            <span class="author-sep">·</span>
+            <span class="author-level">贫农</span>
+          </div>
+          <span class="post-time">2 小时前</span>
+        </div>
+        <h1 class="post-title">[内容已隐藏]</h1>
+        <div class="post-body-text">
+          <p style="color: var(--text-muted);">此内容未通过安全检查，已对其他用户隐藏。</p>
+        </div>
+        <div class="post-category-row">
+          <span class="category-mark cm-help">求助</span>
+        </div>
+      </div>
+    </article>
+
+    <div style="height: 60px;"></div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>
