@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>激活 — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--surface);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+    }
+    .auth-brand {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .auth-icon {
+      width: 48px; height: 48px;
+      margin: 0 auto 16px;
+      stroke: var(--text-muted);
+      stroke-width: 1.5;
+      fill: none;
+    }
+    .auth-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .auth-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .code-boxes {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 32px 0 20px;
+    }
+    .code-box {
+      width: 48px; height: 56px;
+      border-radius: var(--r-md);
+      border: 1px solid var(--danger);
+      background: rgba(199, 91, 58, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    @media (max-width: 359px) {
+      .code-box { width: 40px; height: 48px; font-size: 20px; }
+      .code-boxes { gap: 6px; }
+    }
+    .field-error {
+      text-align: center;
+      font-size: 13px;
+      color: var(--danger);
+      line-height: 1.4;
+      min-height: 18px;
+      margin-bottom: 16px;
+    }
+    .resend-row {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .resend-link {
+      color: var(--interactive);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 150ms ease;
+    }
+    .resend-link:hover {
+      color: var(--interactive-hover);
+      text-decoration: underline;
+    }
+    .resend-cooldown {
+      color: var(--text-muted);
+    }
+    @media (max-width: 359px) {
+      .auth-page { padding: 16px; }
+      .auth-title { font-size: 18px; }
+    }
+    @media (max-height: 500px) {
+      .auth-brand { margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <div class="auth-brand">
+        <svg class="auth-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <div class="auth-title">验证码已发送到</div>
+        <div class="auth-subtitle">hello@example.com</div>
+      </div>
+
+      <div class="code-boxes">
+        <div class="code-box">1</div>
+        <div class="code-box">2</div>
+        <div class="code-box">3</div>
+        <div class="code-box">4</div>
+        <div class="code-box">5</div>
+        <div class="code-box">6</div>
+      </div>
+
+      <div class="field-error">验证码不正确，请重新输入</div>
+
+      <div class="resend-row">
+        没收到？<span class="resend-cooldown">重新发送 (52s)</span>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+
+</body>
+</html>

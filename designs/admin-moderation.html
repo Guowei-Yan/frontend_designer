@@ -13,6 +13,42 @@
       background: var(--surface);
     }
 
+    .admin-mobile-warning {
+      display: none;
+    }
+    @media (max-width: 1023px) {
+      .admin-layout { display: none; }
+      .admin-mobile-warning {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 40px 24px;
+        text-align: center;
+        background: var(--surface);
+      }
+      .admin-mobile-warning svg {
+        width: 48px; height: 48px;
+        stroke: var(--text-muted);
+        stroke-width: 1.5;
+        fill: none;
+        margin-bottom: 16px;
+      }
+      .admin-mobile-warning h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+      .admin-mobile-warning p {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        max-width: 280px;
+      }
+    }
+
     .admin-sidebar {
       width: 220px;
       flex-shrink: 0;
@@ -376,6 +412,15 @@
   </style>
 </head>
 <body>
+
+  <div class="admin-mobile-warning">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="2" width="14" height="20" rx="2"/>
+      <line x1="12" y1="18" x2="12" y2="18"/>
+    </svg>
+    <h2>请使用桌面设备</h2>
+    <p>管理后台需要更大的屏幕空间来查看数据和进行操作。请在电脑或平板上访问。</p>
+  </div>
 
   <div class="admin-layout">
 

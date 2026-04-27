@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feed (Anonymous) — Plan-Local</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .page-layout {
+      display: grid;
+      gap: 48px;
+      max-width: 1040px;
+      margin: var(--topbar-height) auto 0;
+      padding: 0 40px;
+      align-items: start;
+      grid-template-columns: minmax(0, 640px) 240px;
+    }
+    .feed-main { min-width: 0; }
+    .feed-sidebar {
+      padding-top: 40px;
+      position: sticky;
+      top: calc(var(--topbar-height) + 16px);
+      max-height: calc(100vh - var(--topbar-height) - 32px);
+      overflow-y: auto;
+    }
+    .feed-sidebar::-webkit-scrollbar { display: none; }
+    .feed-sidebar { -ms-overflow-style: none; scrollbar-width: none; }
+    @media (max-width: 1023px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+        max-width: 640px;
+        padding: 0 20px;
+        gap: 0;
+      }
+      .feed-sidebar { display: none; }
+    }
+    @media (max-width: 639px) {
+      .page-layout {
+        max-width: 100%;
+        padding: 0;
+        padding-bottom: 72px;
+      }
+    }
+    .anon-banner {
+      margin: 20px var(--content-px) 24px;
+      padding: 14px 16px;
+      background: var(--surface-raised);
+      border: 1px solid var(--divider);
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+    }
+    .anon-banner-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .anon-banner-text strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .anon-banner-btn {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      background: var(--interactive);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: background 150ms ease;
+    }
+    .anon-banner-btn:hover { background: var(--interactive-hover); }
+    .anon-interaction-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 8px;
+      animation: hintFadeIn 200ms ease-out;
+    }
+    @keyframes hintFadeIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    [data-theme="dark"] .breathing-battle {
+      background: rgba(204, 170, 92, 0.09);
+      border-color: rgba(204, 170, 92, 0.25);
+    }
+    [data-theme="dark"] .tag-pill {
+      background: rgba(196, 173, 143, 0.08);
+    }
+    [data-theme="dark"] .tag-pill:hover {
+      background: rgba(196, 173, 143, 0.15);
+    }
+    [data-theme="dark"] .official-badge {
+      background: rgba(196, 173, 143, 0.12);
+    }
+    [data-theme="dark"] .sidebar-hot-badge {
+      background: rgba(204, 170, 92, 0.14);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-stamp">P</div>
+      <span class="brand-city">Perth</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-btn topbar-search" title="搜索">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.5" y1="16.5" x2="22" y2="22" />
+        </svg>
+      </button>
+      <button class="topbar-btn" title="登录" style="padding: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;stroke:currentColor;stroke-width:1.5;">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="page-layout">
+    <main class="feed-main">
+
+      <div class="breathing-zone">
+        <div class="breathing-city">Perth · 今天 8 条新动态</div>
+        <div class="breathing-summary">近期求助最多的是水管问题</div>
+      </div>
+
+      <!-- Anonymous Banner -->
+      <div class="anon-banner">
+        <div class="anon-banner-text">
+          <strong>欢迎来到 Perth 社区</strong><br/>
+          登录后可以发帖、回复、获得完整体验
+        </div>
+        <button class="anon-banner-btn">去登录</button>
+      </div>
+
+      <!-- Post 1 · Anonymous can read and like (weight 0.1) -->
+      <article class="post-item" data-category="help" data-solved="false">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+          <div class="post-author-row">
+            <div class="avatar av-28 av-wealthy">
+              <div class="avatar-img" style="background: linear-gradient(135deg, #E8B090 0%, #C07B50 100%);"></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">老王</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">富农</span>
+            </div>
+            <span class="post-time">23 分钟前</span>
+          </div>
+          <div class="post-body">
+            <h3 class="post-title">厨房下水堵了三天了，求推荐靠谱的管道工</h3>
+            <div class="post-excerpt-fade">
+              试过了超市买的通渠剂，倒了整整两瓶完全没用。楼下邻居已经开始抱怨有渗水，今晚必须解决掉，急！
+            </div>
+          </div>
+          <div class="post-meta-row">
+            <span class="category-mark cm-help">求助</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                12
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                5
+                <span class="anon-interaction-hint">注册后你的赞更有份量</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Post 2 -->
+      <article class="post-item" data-category="recommend">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+          <div class="post-author-row">
+            <div class="avatar av-28 av-middle">
+              <div class="avatar-img" style="background: linear-gradient(135deg, #9CBFAA 0%, #6A9A7A 100%);"></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">小李</span>
+              <span class="author-sep">·</span>
+              <span class="author-level">中农</span>
+            </div>
+            <span class="post-time">1 小时前</span>
+          </div>
+          <div class="post-body">
+            <h3 class="post-title">Northbridge 这家越南粉真的绝了</h3>
+            <div class="post-excerpt-fade">
+              藏在一条小巷子里，要不是朋友带路根本找不到。汤底是真材实料熬的，牛肉河粉大份才 $16。
+            </div>
+          </div>
+          <div class="post-meta-row">
+            <span class="category-mark cm-recommend">推荐</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                5
+              </span>
+              <span class="interaction-item liked">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                18
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Post 3 · Official -->
+      <article class="post-item" data-category="event">
+        <div class="post-aura"></div>
+        <div class="post-inner">
+          <div class="pinned-row">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="12" y1="17" x2="12" y2="22" />
+              <path d="M5 17H19V15L17 8V4H7V8L5 15V17Z" />
+            </svg>
+            置顶公告
+          </div>
+          <div class="post-author-row">
+            <div class="avatar av-28">
+              <div class="avatar-img" style="background: linear-gradient(135deg, #9A8878 0%, #7A6858 100%);"></div>
+            </div>
+            <div class="author-info">
+              <span class="author-name">社区小助手</span>
+              <span class="official-badge">官方</span>
+            </div>
+            <span class="post-time">今天 09:00</span>
+          </div>
+          <div class="post-body">
+            <h3 class="post-title">📅 本周六 Subiaco 市集：手工艺 · 二手书 · 本地农产品</h3>
+            <div class="post-excerpt-fade">
+              每月第一个周六早上 7:00–13:00，Rokeby Road 路边。今年新加了宠物交流区，欢迎带毛孩子来逛逛。
+            </div>
+          </div>
+          <div class="post-meta-row">
+            <span class="category-mark cm-event">活动</span>
+            <div class="post-interactions">
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                3
+              </span>
+              <span class="interaction-item">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                27
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <div class="load-more">· · ·</div>
+    </main>
+
+    <aside class="feed-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-city-header">
+          <div class="sidebar-city-stamp">P</div>
+          <div>
+            <div class="sidebar-city-name">Perth 社区</div>
+            <div class="sidebar-city-since">自 2024 年 3 月建立</div>
+          </div>
+        </div>
+        <div class="sidebar-stat-grid">
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value val-active">8</span>
+            <span class="sidebar-stat-label">今日新帖</span>
+          </div>
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value">156</span>
+            <span class="sidebar-stat-label">活跃用户</span>
+          </div>
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value">312</span>
+            <span class="sidebar-stat-label">本月发帖</span>
+          </div>
+          <div class="sidebar-stat-item">
+            <span class="sidebar-stat-value val-success">3</span>
+            <span class="sidebar-stat-label">已解决</span>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">热门话题</div>
+        <div class="tag-cloud">
+          <button class="tag-pill">#水管维修</button>
+          <button class="tag-pill">#早午餐推荐</button>
+          <button class="tag-pill">#Kings Park</button>
+          <button class="tag-pill">#遛狗</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- No FAB for anonymous users -->
+
+  <!-- Bottom Nav: no post button, "我的" replaced with "登录" -->
+  <nav class="bottom-nav" aria-label="主导航">
+    <div class="bnav-items">
+      <button class="bnav-item bnav-active" aria-label="首页">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        首页
+      </button>
+      <button class="bnav-item" aria-label="搜索">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        搜索
+      </button>
+      <button class="bnav-item" aria-label="登录">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" y1="12" x2="3" y2="12" />
+        </svg>
+        登录
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    (function () {
+      function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+      }
+      const initial = document.documentElement.getAttribute('data-viewer-theme');
+      if (initial) applyTheme(initial);
+      window.addEventListener('message', function (e) {
+        if (e.data && e.data.type === 'THEME_CHANGE') applyTheme(e.data.theme);
+      });
+    })();
+  </script>
+</body>
+</html>
